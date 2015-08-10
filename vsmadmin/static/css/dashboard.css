@@ -1,0 +1,109 @@
+#framework
+{
+    text-align: center;
+}
+
+#divNavBar
+{
+    text-align: left;
+}
+
+.nav>li>a
+{
+    font-size: 14px;
+    font-family: 'ClearSans-Medium', 'Arial';
+    color: white;
+}
+
+hr{
+    /*margin-top: 15px;*/
+    margin-bottom: 15px;
+}
+
+
+#divMain{
+    text-align: left;
+    overflow: hidden;
+}
+
+.module-title{
+    margin: 5px;
+    margin-top: 25px;
+    font-size: 18px;
+    display:block;
+}
+
+#divManifestForm{
+    margin: 15px;
+    width: 1024px;
+    /*border: 1px solid gray;*/
+}
+
+.form-group label{
+    text-align: right;
+    margin-left: 5px;
+}
+
+.label-1{
+    width: 130px;
+}
+
+.label-2{
+    width: 295px;
+}
+
+#divStorageClass{
+    margin-top: 10px;
+    margin-left: 20px;
+    /*border:1px solid #ccc;*/
+}
+
+#divStorageClass span{
+    font-size: 14px;
+    font-weight: normal;
+}
+
+#divStorageClass span:hover{
+    cursor: pointer;
+}
+
+
+#tStorageGroup{
+    margin:10px 0px 0px 40px;
+}
+
+#tStorageGroup thead tr th{
+    width: 310px;
+    text-align: center;
+    border-bottom: none;
+}
+
+.option-bar{
+    /*border:1px solid #ccc;*/
+    margin:10px 0px 0px 40px;
+}
+
+#tProfiles{
+     margin:10px 0px 0px 40px;
+}
+
+#tProfiles thead tr th{
+    width: 185px;
+    text-align: center;
+    border-bottom: none;
+}
+
+.form-option-bar{
+    text-align: right;
+    height: 80px;
+}
+
+#tPath{
+    margin:10px 0px 0px 40px;
+}
+
+#tPath thead tr th{
+    width: 470px;
+    text-align: center;
+    border-bottom: none;
+}

@@ -1,0 +1,121 @@
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Virtual Storage Manager</title>
+	<link href="{{ STATIC_URL }}css/bootstrap.min.css" rel="stylesheet">
+	<link href="{{ STATIC_URL }}css/dashboard.css" rel="stylesheet">
+	<script src="{{ STATIC_URL }}js/jquery-1.11.2.min.js"></script>
+	<script src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
+	<script src="{{ STATIC_URL }}js/dashboard.js"></script>
+</head>
+<body>
+	 <!--The frame work of dashboard-->
+    <div id="framework">
+        <!--the navigate area-->
+        <nav  class="navbar navbar-inverse" style="border-radius:0px">
+            <div id="divNavBar">
+                <ul class="nav navbar-nav">
+	                <li><a href="#">Dashboard</a></li>
+	               	<li class="dropdown">
+                    	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Manifest <span class="caret"></span></a>
+                    	<ul class="dropdown-menu" role="menu">
+                        	<li><a href="/cluster/">Cluster</a></li>
+                        	<li><a href="/server/">Server</a></li>
+                     	</ul>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div id="divMain">	
+        	<div id="divManifestForm">
+        		<form class="form-inline">
+        			<span id="lblModuleTitle" class="module-title">Server Manifest</span>
+        			<hr>
+  					<div class="form-group">
+    					<label class="label-1" for="lblCluster">vsm controller ip</label>
+    					<input id="lblCluster" type="textbox" class="form-control"/>
+  					</div>
+  					<div class="form-group">
+    					<label class="label-1" for="lblCluster">auth key</label>
+    					<input id="lblCluster" type="textbox" class="form-control"/>
+  					</div>
+  					<br>
+  					<br>
+  					<div class="form-group">
+    					<label class="label-1" for="lblStorageClass">role</label>
+    					<input id="lblStorageClass" type="textbox" class="form-control" />
+    					<button btn="btnAddStorageClass" class="btn btn-primary">add</button>
+  					</div>
+  					<div id="divStorageClass" class="form-group">
+  						<span class="label label-primary">storage</span>
+  						<span class="label label-primary">monitor</span>
+  					</div>
+
+  					<span class="module-title">ssd</span>
+        			<hr>
+  					<div class="form-group">
+  						<div class="option-bar">
+ 							<button  class="btn btn-primary">Add Path</button>
+ 						</div>
+  						<table id="tPath" class="table table-bordered">
+  							<thead>
+  								<tr>
+  									<th>device path</th>
+  									<th>journal path</th>
+  								</tr>
+  							</thead>
+  							<tbody>
+  								<!-- <tr>
+  									<td>performance</td>
+  									<td>Performance_Disk</td>
+  									<td>10krpm_sas</td>
+  								</tr> -->
+  								<tr>
+  									<td colspan="2">
+  										no data
+  									</td>
+  								</tr>
+  							</tbody>
+  						</table>
+  					</div>
+
+
+  					<span  class="module-title">7200_rpm_sata</span>
+        			<hr>
+        			<div class="form-group">
+  						<div class="option-bar">
+ 							<button class="btn btn-primary">Add Path</button>
+ 						</div>
+  						<table id="tPath" class="table table-bordered">
+  							<thead>
+  								<tr>
+  									<th>device path</th>
+  									<th>journal path</th>
+  								</tr>
+  							</thead>
+  							<tbody>
+  								<!-- <tr>
+  									<td>performance</td>
+  									<td>Performance_Disk</td>
+  									<td>10krpm_sas</td>
+  								</tr> -->
+  								<tr>
+  									<td colspan="2">
+  										no data
+  									</td>
+  								</tr>
+  							</tbody>
+  						</table>
+  					</div>
+				</form>
+        		<hr>
+				<div class="form-option-bar">
+					<button btn="btnSubmit" class="btn btn-primary">Submit</button>
+					<button btn="btnCancel" class="btn ">Cancel</button>
+ 				</div>
+        	</div>
+
+        </div>
+    </div>
+</body>
+</html>
