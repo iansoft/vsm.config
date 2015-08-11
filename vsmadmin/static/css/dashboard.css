@@ -1,47 +1,5 @@
-#framework
-{
-    text-align: center;
-}
-
-#divNavBar
-{
-    text-align: left;
-}
-
-.nav>li>a
-{
-    font-size: 14px;
-    font-family: 'ClearSans-Medium', 'Arial';
-    color: white;
-}
-
 hr{
-    /*margin-top: 15px;*/
     margin-bottom: 15px;
-}
-
-
-#divMain{
-    text-align: left;
-    overflow: hidden;
-}
-
-.module-title{
-    margin: 5px;
-    margin-top: 25px;
-    font-size: 18px;
-    display:block;
-}
-
-#divManifestForm{
-    margin: 15px;
-    width: 1024px;
-    /*border: 1px solid gray;*/
-}
-
-.form-group label{
-    text-align: right;
-    margin-left: 5px;
 }
 
 .label-1{
@@ -51,6 +9,79 @@ hr{
 .label-2{
     width: 295px;
 }
+
+#framework
+{
+    text-align: center;
+}
+
+
+#divNavBar
+{
+    text-align: left;
+}
+
+#tabManifest{
+    margin-top: 10px;
+}
+
+#tabManifest>li>a{
+    color: black;
+}
+
+.nav>li>a
+{
+    font-size: 14px;
+    font-family: 'ClearSans-Medium', 'Arial';
+    color: white;
+}
+
+.module-wrap{
+    margin: 15px;
+    margin-top: 0px;
+    width: 1024px;
+    /*border: 1px solid gray;*/
+}
+
+.module-title{
+    margin: 5px;
+    margin-top: 25px;
+    font-size: 18px;
+    display:inline-block;
+}
+
+.option-bar{
+    text-align: right;
+    margin:15px 0px 0px 0px;
+}
+
+.btn-right{
+    margin-top: 20px;
+    float: right;
+}
+
+#btnGenerateManifest{
+    margin-top: 8px;
+}
+
+
+#divNodes{
+    /*border: 1px solid #ccc;*/
+    padding-left: 40px;
+}
+
+
+#divMain{
+    text-align: left;
+    overflow: hidden;
+}
+
+
+.form-group label{
+    text-align: right;
+    margin-left: 5px;
+}
+
 
 #divStorageClass{
     margin-top: 10px;
@@ -68,8 +99,8 @@ hr{
 }
 
 
-#tStorageGroup{
-    margin:10px 0px 0px 40px;
+.table{
+    margin:10px 0px 0px 0px;
 }
 
 #tStorageGroup thead tr th{
@@ -78,14 +109,6 @@ hr{
     border-bottom: none;
 }
 
-.option-bar{
-    /*border:1px solid #ccc;*/
-    margin:10px 0px 0px 40px;
-}
-
-#tProfiles{
-     margin:10px 0px 0px 40px;
-}
 
 #tProfiles thead tr th{
     width: 185px;
@@ -93,17 +116,14 @@ hr{
     border-bottom: none;
 }
 
-.form-option-bar{
-    text-align: right;
-    height: 80px;
-}
-
-#tPath{
-    margin:10px 0px 0px 40px;
-}
 
 #tPath thead tr th{
     width: 470px;
     text-align: center;
     border-bottom: none;
+}
+
+.form-option-bar{
+    text-align: right;
+    height: 80px;
 }
