@@ -29,6 +29,10 @@ hr{
     color: black;
 }
 
+.remove:hover{
+    cursor: pointer;
+}
+
 .nav>li>a
 {
     font-size: 14px;

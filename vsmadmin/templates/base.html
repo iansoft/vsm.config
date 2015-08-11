@@ -6,6 +6,7 @@
 	<link href="{{ STATIC_URL }}css/dashboard.css" rel="stylesheet">
 	<script src="{{ STATIC_URL }}js/jquery-1.11.2.min.js"></script>
 	<script src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
+	<script src="{{ STATIC_URL }}js/validate.js"></script>
 	<script src="{{ STATIC_URL }}js/dashboard.js"></script>
 	{% block js %}{% endblock %}
 </head>
@@ -16,7 +17,7 @@
 		<nav  class="navbar navbar-inverse" style="border-radius:0px">
 	        <div id="divNavBar">
 	            <ul class="nav navbar-nav">
-	                <li><a href="/home/">Virtual Storage Manager</a></li>
+	                <li><a href="/config/">Virtual Storage Manager</a></li>
 	                <li><button id="btnGenerateManifest" class="btn btn-success">Generate Manifest</button></li>
 	            </ul>
 	        </div>

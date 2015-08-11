@@ -40,7 +40,13 @@ var datasource = {
         ct_target_min_flush_age_m:"7",
         ct_target_min_evict_age_m:"8",
     }
-}
+};
+
+var config = {
+    controller:"192.168.1.1",
+    nodes:["192.168.1.2","192.168.1.3","192.168.1.3"]
+};
+
 
 $(document).ready(function(){
     var strJSON = JSON.stringify(datasource);

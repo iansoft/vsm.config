@@ -3,18 +3,26 @@
 {% block title %}Virtual Storage Manager{% endblock%}
 
 {% block js %}
-	<script src="{{ STATIC_URL }}js/home.js"></script>
+	<script src="{{ STATIC_URL }}js/config.js"></script>
 {% endblock %}
 
 {% block content %}
+
+<!--Warning tip-->
+<div id="divWarning" class="alert alert-warning alert-dismissible"  hidden="hidden" role="alert">
+  <!-- <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button> -->
+  <strong>Warning!</strong> 
+  <span id="lblWarningMsg"></span>
+</div>
+
 <!--Configuration-->
 <div id="divBasicForm" class="module-wrap">
   <span class="module-title">Configuration</span>
   <hr>
   <form class="form-inline">
     <div class="form-group">
-      <label class="label-1" for="lblCluster">controller addr.</label>
-      <input id="lblCluster" type="textbox" class="form-control"/>
+      <label class="label-1" for="txtClusterAddress">controller addr.</label>
+      <input id="txtClusterAddress" type="textbox" class="form-control"/>
     </div>
   </form>
 </div> 
@@ -25,25 +33,23 @@
   <hr>
   <form class="form-inline">
     <div class="form-group">
-      <label class="label-1" for="lblCluster">node addr.</label>
-      <input id="lblCluster" type="textbox" class="form-control"/>
-      <button id="btnAddNode" class="btn btn-primary">add</button>
+      <label class="label-1" for="txtNodeAddress">node addr.</label>
+      <input id="txtNodeAddress" type="textbox" class="form-control"/>
+      <a id="btnAddNode" class="btn btn-primary" onclick="addNode()">add</a>
+      <a id="btnClearNode" class="btn btn-primary" onclick="clearNode()">remove all</a>
     </div>
   </form>
+
   <div id="divNodes">
-  	<ul>
-  		<li>192.168.1.1</li>
-  		<li>192.168.1.2</li>
-  		<li>192.168.1.3</li>
-  		<li>192.168.1.4</li>
-  		<li>192.168.1.5</li>
-  		<li>192.168.1.6</li>
+  	<ul id="ulNodes">
+      <!--any IPs-->
   	</ul>
   </div>
 </div> 
 
 <div class="module-wrap form-option-bar">
 	<hr>
+   {% csrf_token %}
 	<button id="btnSubmitConfig" btn="btnSubmit" class="btn btn-primary">Submit</button>
 	<button btn="btnCancel" class="btn ">Cancel</button>
 </div>

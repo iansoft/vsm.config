@@ -3,6 +3,7 @@ from django.template import RequestContext, loader
 import datetime
 import os
 import random
+import json
 
 def index(request):
     template = loader.get_template('dashboard/index.html')
@@ -13,3 +14,11 @@ def index(request):
                                       ,"project_dir": PROJECT_PATH
                                       ,"static_dir": static_path})
     return HttpResponse(template.render(context))
+
+
+def set_config(request):
+	data = json.loads(request.body)
+	print "===========config data================"
+	print data;
+	rs = json.dumps({"Hello":1})
+	return HttpResponse(rs);
