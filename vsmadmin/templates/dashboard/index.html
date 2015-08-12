@@ -22,7 +22,7 @@
   <form class="form-inline">
     <div class="form-group">
       <label class="label-1" for="txtClusterAddress">controller addr.</label>
-      <input id="txtClusterAddress" type="textbox" class="form-control"/>
+      <input id="txtClusterAddress" type="textbox" class="form-control" value="{{config_data.controller_address}}" />
     </div>
   </form>
 </div> 
@@ -43,6 +43,12 @@
   <div id="divNodes">
   	<ul id="ulNodes">
       <!--any IPs-->
+      {% for node in config_data.nodes %}
+      <li>
+        <span class="node-ip">{{node}}</span>
+        <img class='remove' src='/static/images/remove.png' onclick='removeNode(this);'>
+      </li>
+      {% endfor %}
   	</ul>
   </div>
 </div> 

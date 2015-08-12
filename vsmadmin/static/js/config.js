@@ -11,7 +11,6 @@ $(document).ready(function(){
 
 	$("#btnSubmitConfig").click(function(){
 		setConfiguration();
-		//window.location.href = "/manifest/";
 	})
 });
 
@@ -50,11 +49,16 @@ function setConfiguration(){
         data: JSON.stringify(config),
         dataType:"json",
         success: function(data){
+        	if(data.status == 0){
+        		window.location.href = "/manifest/";
+        	}
             console.log(data);
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
-        //    if(XMLHttpRequest.status == 500)
-        //        showTip("error","INTERNAL SERVER ERROR")
+           if(XMLHttpRequest.status == 500){
+               $("#divWarning").show();
+			   $("#lblWarningMsg")[0].innerHTML = "INTERNAL SERVER ERROR";
+           }
         },
         headers: {
             "X-CSRFToken": token
