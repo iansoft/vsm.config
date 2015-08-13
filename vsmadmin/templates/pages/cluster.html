@@ -4,16 +4,9 @@
     <button id="btnSaveClusterBasic" class="btn btn-success btn-right">Save</button>
     <hr>
     <!--Warning tip-->
-<div id="divBasicWarning" class="alert alert-warning alert-dismissible" hidden="hidden" role="alert">
-  <strong>Warning!</strong> 
-  <span id="lblBasicWarningMsg"></span>
-</div>
-
-<div id="divBasicSuccess" class="alert alert-success alert-dismissible" hidden="hidden" role="alert">
-    <!-- <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button> -->
-  <span id="lblBasicSuccessMsg"></span>
-</div>
-
+    <div id="divBasicMessage">
+    </div>
+    
     <!-- {{cluster_basic_data}} -->
     <form class="form-inline">
       <div class="form-group">
@@ -49,19 +42,20 @@
     <span class="module-title">Storage Group</span>
     <button btn="btnSaveStorage" class="btn btn-success btn-right">Save</button>
     <hr>
+    <!-- {{cluster_storage_data}} -->
     <form class="form-inline">
       <div class="form-group">
         <label class="label-1" for="lblStorageClass">storage class</label>
-        <input id="lblStorageClass" type="textbox" class="form-control" />
-        <button btn="btnAddStorageClass" class="btn btn-primary">add</button>
+        <input id="txtStorageClass" type="textbox" class="form-control" />
+        <a id="btnAddStorageClass" class="btn btn-primary">add</a>
       </div>
-      <div id="divStorageClass" class="form-group">
-        <span class="label label-info">10krpm_sas</span>
-        <span class="label label-info">7200_rpm_sata</span>
-        <span class="label label-info">ssd</span>
+      <div id="divStorageClass1" class="form-group storage-class">
+        {% for storage_class in cluster_storage_data.storage_class %}
+          <span class="label label-info lable-storage-class" onclick='RemoveStorageClass(this)'>{{storage_class}}</span>
+        {% endfor %}
       </div>
       <div class="option-bar">
-        <button btn="btnAddStorageGroup" class="btn btn-primary">Add Storage Group</button>
+        <a id="btnAddStorageGroup" class="btn btn-primary">Add Storage Group</a>
       </div>
       <table id="tStorageGroup" class="table table-bordered">
       <thead>
@@ -72,17 +66,25 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td colspan="3">
-            no storage group
-          </td>
-        </tr>
+        {% for storage_group in cluster_storage_data.storage_group %}
+          <tr>
+            <td>{{storage_group.group_name}}</td>
+            <td>{{storage_group.friendly_name}}</td>
+            <td>{{storage_group.storage_class}}</td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="3">
+              no data
+            </td>
+          </tr>
+        {% endfor %}
       </tbody>
     </table>
     </form>
 </div>
 <!--Profiles-->
-<div id="divProfilesForm" class="module-wrap">
+<!-- <div id="divProfilesForm" class="module-wrap">
     <span class="module-title">Profiles</span>
     <button btn="btnSaveProfiles" class="btn btn-success btn-right">Save</button>
     <hr>
@@ -107,10 +109,10 @@
         </tr>
       </tbody>
     </table>
-</div>
+</div> -->
 
 <!--Cache-->
-<form class="form-inline">
+<!-- <form class="form-inline">
 <div id="divCacheForm" class="module-wrap">
     <span class="module-title">Cache</span>
     <button btn="btnSaveCache" class="btn btn-success btn-right">Save</button>
@@ -154,17 +156,13 @@
         <label class="label-2" for="lblFileSystem">ct target min evict age m</label>
         <input id="lblFileSystem"  type="textbox" class="form-control" />
       </div>
- 
 </div>
-
-
-
+ -->
 <!--Settings-->
-<div id="divSettingsForm" class="module-wrap">
+<!-- <div id="divSettingsForm" class="module-wrap">
     <span class="module-title">Settings</span>
     <button btn="btnSaveSettings" class="btn btn-success btn-right">Save</button>
     <hr>
-    <!-- <form class="form-inline"> -->
       <div class="form-group">
         <label class="label-2" for="lblFileSystem">storage group near full threshold</label>
         <input id="lblFileSystem"  type="textbox" class="form-control" />
@@ -213,6 +211,7 @@
         <label class="label-2" for="lblFileSystem">disk full threshold</label>
         <input id="lblFileSystem"  type="textbox" class="form-control" />
       </div>
-    <!-- </form> -->
 </div>
-</from> 
+
+
+</from>  -->

@@ -10,6 +10,10 @@
 
 {% csrf_token %}
 
+<div class="tab-pane fade"  hidden="hidden">
+    {% include "pages/server.html" %} 
+</div>
+
 <!--Tabs-->
 <ul id="tabManifest" class="nav nav-tabs">
   <li class="active">
@@ -17,9 +21,9 @@
       Cluster:{{config_data.controller_address}}
     </a>
 	</li>
-  {% for node in config_data.nodes %}
+  {% for tab_node in config_data.nodes %}
     <li>
-      <a href="#node_{{ forloop.counter0 }}" data-toggle="tab">{{node}}</a>
+      <a href="#node_{{ forloop.counter0 }}" data-toggle="tab">{{tab_node}}</a>
     </li>
   {% endfor %}
 </ul>
@@ -29,11 +33,7 @@
     {% include "pages/cluster.html" %}
   </div>
 
-  <div class="tab-pane fade">
-    {% include "pages/server.html" %} 
-  </div>
-
-  {% for item in config_data.nodes %}
+    {% for tab_node in config_data.nodes %}
     <div id="node_{{ forloop.counter0 }}" class="tab-pane fade" >
         {% include "pages/server.html" %} 
     </div>

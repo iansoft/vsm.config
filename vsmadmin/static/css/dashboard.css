@@ -14,6 +14,13 @@ hr{
     width: 295px;
 }
 
+.lable-storage-class{
+    margin-left: 10px;
+}
+
+.lable-storage-class:hover{
+    background-color: red;
+}
 
 #framework
 {
@@ -92,18 +99,18 @@ hr{
 }
 
 
-#divStorageClass{
+.storage-class{
     margin-top: 10px;
     margin-left: 20px;
     /*border:1px solid #ccc;*/
 }
 
-#divStorageClass span{
+.storage-class span{
     font-size: 14px;
     font-weight: normal;
 }
 
-#divStorageClass span:hover{
+.storage-class span:hover{
     cursor: pointer;
 }
 

@@ -4,6 +4,7 @@ import datetime
 import os
 import random
 import json
+import re
 import dashboard.views as dashboard_view
 
 def index(request):
@@ -11,10 +12,12 @@ def index(request):
 	#read the config file
 	config_data = dashboard_view.read_config_file()
 	cluster_basic_data = read_cluster_basic_manifest()
+	cluster_storage_data = read_cluster_storage_manifest()
 
 	context_data = {
 		"config_data": config_data,
 		"cluster_basic_data":cluster_basic_data,
+		"cluster_storage_data":cluster_storage_data
 	}
 	context = RequestContext(request, context_data)
 	return HttpResponse(template.render(context))
@@ -22,8 +25,8 @@ def index(request):
 
 def read_cluster_basic_manifest():
 	base_dir = os.path.dirname(os.path.dirname(__file__))
-	config_manifest_path = base_dir + "/files/cluster.basic.manifest"
-	fileHandler = open(config_manifest_path,"a+")
+	manifest_path = base_dir + "/files/cluster.basic.manifest"
+	fileHandler = open(manifest_path,"a+")
 	file_lines = fileHandler.readlines()
 	#remove all the '\n' item
 	file_lines = filter(lambda a: a != '\n', file_lines)
@@ -72,6 +75,48 @@ def read_cluster_basic_manifest():
 			cluster_basic["ceph_cluster_addr"] = item
 
 	return cluster_basic 
+
+
+def read_cluster_storage_manifest():
+	base_dir = os.path.dirname(os.path.dirname(__file__))
+	manifest_path = base_dir + "/files/cluster.storage.manifest"
+	fileHandler = open(manifest_path,"a+")
+	file_lines = fileHandler.readlines()
+	#remove all the '\n' item
+	file_lines = filter(lambda a: a != '\n', file_lines)
+	file_lines = [item.replace('\n','') for item in file_lines]
+
+	#format: [storage group name]  [user friendly storage group name] [storage class]
+
+	cluster_storage = {
+		"storage_class":[],
+		"storage_group":[],
+	}
+
+	item_flag = ""
+	for item in file_lines:
+		#get the cluster mark
+		if item == "[storage_class]":
+			item_flag = "storage_class"
+			continue
+		#get the file_system mark
+		if item == "[storage_group]":
+			item_flag = "storage_group"
+			continue
+
+		if item_flag == "storage_class":
+			cluster_storage["storage_class"].append(item) 
+		if item_flag == "storage_group":
+			item = re.sub("(\s+)",",",item)
+			group_items = re.split("(\,)",item)
+			group_items_data = {
+				"group_name":group_items[0],
+				"friendly_name":group_items[2],
+				"storage_class":group_items[4],
+			}
+			cluster_storage["storage_group"].append(group_items_data) 
+
+	return cluster_storage 
 
 
 def set_cluster_basic_file(request):
