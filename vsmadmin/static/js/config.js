@@ -104,8 +104,6 @@ function addNode(){
 		_html_ip_address += "</li>";
 
 		$("#ulNodes").append(_html_ip_address);
-		// config.nodes.push(_node_ip);
-		// console.log(config);
 	}
 	return false;
 }

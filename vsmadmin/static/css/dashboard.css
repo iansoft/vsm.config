@@ -2,6 +2,10 @@ hr{
     margin-bottom: 15px;
 }
 
+.alert{
+    margin-bottom: 10px;
+}
+
 .label-1{
     width: 130px;
 }
@@ -9,6 +13,7 @@ hr{
 .label-2{
     width: 295px;
 }
+
 
 #framework
 {

@@ -34,17 +34,16 @@ def set_config_file(data):
 	file_lines.append(data["controller"]+"\n\n")
 	file_lines.append("[nodes]\n")
 	file_lines.extend([node+"\n" for node in data["nodes"] ])
-
 	return file_lines;
 
 def read_config_file():
 	base_dir = os.path.dirname(os.path.dirname(__file__))
-	config_manifest_path = base_dir + "/files/config.manifest";
-	fileHandler = open(config_manifest_path,"r")
+	config_manifest_path = base_dir + "/files/config.manifest"
+	fileHandler = open(config_manifest_path,"a+")
 	file_lines = fileHandler.readlines()
 	#remove all the '\n' item
 	file_lines = filter(lambda a: a != '\n', file_lines)
-	file_lines = [item[0:-1] for item in file_lines]
+	file_lines = [item.replace('\n','') for item in file_lines]
 
 	item_flag = ""
 	controller = ""
@@ -66,8 +65,6 @@ def read_config_file():
 			nodes.append(item)
 
 	config_data = {"controller_address":controller,"nodes":nodes}
-
-	print config_data
 	return config_data
 
 

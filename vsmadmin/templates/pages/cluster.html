@@ -1,30 +1,46 @@
 <!--Basic-->
 <div id="divBasicForm" class="module-wrap">
-    <span class="module-title">Cluster Manifest</span>
-    <button btn="btnSaveClusterBasic" class="btn btn-success btn-right">Save</button>
+    <span class="module-title">Basic</span>
+    <button id="btnSaveClusterBasic" class="btn btn-success btn-right">Save</button>
     <hr>
+    <!--Warning tip-->
+<div id="divBasicWarning" class="alert alert-warning alert-dismissible" hidden="hidden" role="alert">
+  <strong>Warning!</strong> 
+  <span id="lblBasicWarningMsg"></span>
+</div>
+
+<div id="divBasicSuccess" class="alert alert-success alert-dismissible" hidden="hidden" role="alert">
+    <!-- <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button> -->
+  <span id="lblBasicSuccessMsg"></span>
+</div>
+
+    <!-- {{cluster_basic_data}} -->
     <form class="form-inline">
       <div class="form-group">
         <label class="label-1" for="lblCluster">cluster</label>
-        <input id="lblCluster" type="textbox" class="form-control"/>
+        <input id="txtCluster" type="textbox" class="form-control" value="{{config_data.controller_address}}" readOnly="true"/>
       </div>
       <div class="form-group">
-        <label class="label-1" for="lblFileSystem">file system</label>
-        <input id="lblFileSystem"  type="textbox" class="form-control" />
+        <label class="label-1" for="selFileSystem">file system</label>
+        <select id="selFileSystem" class="form-control" style="width:195px;">
+          <option value="xfs">xfs</option>
+          <option value="nfts">nfts</option>
+        </select>
+        <input id="hfFileSystem" type="hidden" value="{{cluster_basic_data.file_system}}"/>
       </div>
       <br>
       <br>
       <div class="form-group">
         <label class="label-1" for="lblManagementAddress">management addr.</label>
-        <input id="lblManagementAddress" type="textbox" class="form-control" />
+        <input id="lblManagementAddress" type="textbox" class="form-control" value="{{cluster_basic_data.management_addr}}" placeholder="192.168.0.1/10" />
       </div>
       <div class="form-group">
         <label class="label-1" for="lblCephPublicAddress">ceph public addr.</label>
-        <input id="lblCephPublicAddress"  type="textbox" class="form-control" />
+        <input id="lblCephPublicAddress"  type="textbox" class="form-control" value="{{cluster_basic_data.ceph_public_addr}}" placeholder="192.168.0.1/10" />
       </div>
       <div class="form-group">
         <label class="label-1" for="lblCephClusterAddress">ceph cluster addr.</label>
-        <input id="lblCephClusterAddress" type="textbox" class="form-control" />
+        <input id="lblCephClusterAddress" type="textbox" class="form-control" value="{{cluster_basic_data.ceph_cluster_addr}}" placeholder="192.168.0.1/10" />
       </div>
     </form>
 </div>
@@ -92,12 +108,63 @@
       </tbody>
     </table>
 </div>
+
+<!--Cache-->
+<form class="form-inline">
+<div id="divCacheForm" class="module-wrap">
+    <span class="module-title">Cache</span>
+    <button btn="btnSaveCache" class="btn btn-success btn-right">Save</button>
+    <hr>
+
+      <div class="form-group">
+        <label class="label-2" for="lblFileSystem">ct hit set count</label>
+        <input id="lblFileSystem"  type="textbox" class="form-control" />
+      </div>
+      <div class="form-group">
+        <label class="label-2" for="lblFileSystem">ct hit set period s</label>
+        <input id="lblFileSystem"  type="textbox" class="form-control" />
+      </div>
+      <br>
+      <br>
+      <div class="form-group">
+        <label class="label-2" for="lblFileSystem">ct target max objects</label>
+        <input id="lblFileSystem"  type="textbox" class="form-control" />
+      </div>
+      <div class="form-group">
+        <label class="label-2" for="lblFileSystem">ct target max mem mb</label>
+        <input id="lblFileSystem"  type="textbox" class="form-control" />
+      </div>
+      <br>
+      <br>
+      <div class="form-group">
+        <label class="label-2" for="lblFileSystem">ct target dirty ratio</label>
+        <input id="lblFileSystem"  type="textbox" class="form-control" />
+      </div>
+      <div class="form-group">
+        <label class="label-2" for="lblFileSystem">ct target full ratio</label>
+        <input id="lblFileSystem"  type="textbox" class="form-control" />
+      </div>
+      <br>
+      <br>
+      <div class="form-group">
+        <label class="label-2" for="lblFileSystem">ct target min flush age m</label>
+        <input id="lblFileSystem"  type="textbox" class="form-control" />
+      </div>
+      <div class="form-group">
+        <label class="label-2" for="lblFileSystem">ct target min evict age m</label>
+        <input id="lblFileSystem"  type="textbox" class="form-control" />
+      </div>
+ 
+</div>
+
+
+
 <!--Settings-->
 <div id="divSettingsForm" class="module-wrap">
     <span class="module-title">Settings</span>
     <button btn="btnSaveSettings" class="btn btn-success btn-right">Save</button>
     <hr>
-    <form class="form-inline">
+    <!-- <form class="form-inline"> -->
       <div class="form-group">
         <label class="label-2" for="lblFileSystem">storage group near full threshold</label>
         <input id="lblFileSystem"  type="textbox" class="form-control" />
@@ -146,51 +213,6 @@
         <label class="label-2" for="lblFileSystem">disk full threshold</label>
         <input id="lblFileSystem"  type="textbox" class="form-control" />
       </div>
-    </form>
+    <!-- </form> -->
 </div>
-<!--Cache-->
-<div id="divCacheForm" class="module-wrap">
-    <span class="module-title">Cache</span>
-    <button btn="btnSaveCache" class="btn btn-success btn-right">Save</button>
-    <hr>
-    <form class="form-inline">
-      <div class="form-group">
-        <label class="label-2" for="lblFileSystem">ct hit set count</label>
-        <input id="lblFileSystem"  type="textbox" class="form-control" />
-      </div>
-      <div class="form-group">
-        <label class="label-2" for="lblFileSystem">ct hit set period s</label>
-        <input id="lblFileSystem"  type="textbox" class="form-control" />
-      </div>
-      <br>
-      <br>
-      <div class="form-group">
-        <label class="label-2" for="lblFileSystem">ct target max objects</label>
-        <input id="lblFileSystem"  type="textbox" class="form-control" />
-      </div>
-      <div class="form-group">
-        <label class="label-2" for="lblFileSystem">ct target max mem mb</label>
-        <input id="lblFileSystem"  type="textbox" class="form-control" />
-      </div>
-      <br>
-      <br>
-      <div class="form-group">
-        <label class="label-2" for="lblFileSystem">ct target dirty ratio</label>
-        <input id="lblFileSystem"  type="textbox" class="form-control" />
-      </div>
-      <div class="form-group">
-        <label class="label-2" for="lblFileSystem">ct target full ratio</label>
-        <input id="lblFileSystem"  type="textbox" class="form-control" />
-      </div>
-      <br>
-      <br>
-      <div class="form-group">
-        <label class="label-2" for="lblFileSystem">ct target min flush age m</label>
-        <input id="lblFileSystem"  type="textbox" class="form-control" />
-      </div>
-      <div class="form-group">
-        <label class="label-2" for="lblFileSystem">ct target min evict age m</label>
-        <input id="lblFileSystem"  type="textbox" class="form-control" />
-      </div>
-    </from>  
-</div>
+</from> 
