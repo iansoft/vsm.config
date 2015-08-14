@@ -1,7 +1,7 @@
 <!--Basic-->
 <div id="divBasicForm" class="module-wrap">
     <span class="module-title">Basic</span>
-    <button id="btnSaveClusterBasic" class="btn btn-success btn-right">Save</button>
+    <button id="btnSaveClusterBasic" class="btn btn-success btn-right" onclick='SaveClusterBasic()'>Save</button>
     <hr>
     <!--Warning tip-->
     <div id="divBasicMessage">
@@ -40,14 +40,18 @@
 <!--Storage-->
 <div id="divStorageForm" class="module-wrap">
     <span class="module-title">Storage Group</span>
-    <button btn="btnSaveStorage" class="btn btn-success btn-right">Save</button>
+    <button btn="btnSaveStorage" class="btn btn-success btn-right" onclick="SaveClusterStorage()">Save</button>
     <hr>
+     <!--message tip-->
+    <div id="divStorageMessage">
+    </div>
+
     <!-- {{cluster_storage_data}} -->
     <form class="form-inline">
       <div class="form-group">
         <label class="label-1" for="lblStorageClass">storage class</label>
         <input id="txtStorageClass" type="textbox" class="form-control" />
-        <a id="btnAddStorageClass" class="btn btn-primary">add</a>
+        <a id="btnAddStorageClass" class="btn btn-primary" onclick='AddStorageClass()'>add</a>
       </div>
       <div id="divStorageClass1" class="form-group storage-class">
         {% for storage_class in cluster_storage_data.storage_class %}
@@ -55,7 +59,7 @@
         {% endfor %}
       </div>
       <div class="option-bar">
-        <a id="btnAddStorageGroup" class="btn btn-primary">Add Storage Group</a>
+        <a id="btnAddStorageGroup" class="btn btn-primary" onclick="AddStorageGroup()">Add Storage Group</a>
       </div>
       <table id="tStorageGroup" class="table table-bordered">
       <thead>
@@ -63,18 +67,20 @@
           <th>group name</th>
           <th>friendly name</th>
           <th>storage class</th>
+          <th style="width:200px;"></th>
         </tr>
       </thead>
       <tbody>
         {% for storage_group in cluster_storage_data.storage_group %}
           <tr>
-            <td>{{storage_group.group_name}}</td>
-            <td>{{storage_group.friendly_name}}</td>
-            <td>{{storage_group.storage_class}}</td>
+            <td class='group-name'>{{storage_group.group_name}}</td>
+            <td class='friendly-name'>{{storage_group.friendly_name}}</td>
+            <td class='storage-class'>{{storage_group.storage_class}}</td>
+            <td><a class="btn btn-danger" onclick="RemoveStorageGroup(this)">remove</a></td>
           </tr>
         {% empty %}
           <tr>
-            <td colspan="3">
+            <td colspan="4">
               no data
             </td>
           </tr>

@@ -2,9 +2,10 @@
 10krpm_sas
 7200_rpm_sata
 ssd
-
+131asdad
 
 [storage_group]
-performance       Performance_Disk       10krpm_sas
-capacity          Economy_Disk           7200_rpm_sata
-high_performance  High_Performance       ssd
+performance   performance   10krpm_sas   
+capacity   capacity   7200_rpm_sata   
+high_performance   high_performance   ssd   
+dsfa   fdafdafsa   131asdad   

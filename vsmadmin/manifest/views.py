@@ -140,11 +140,40 @@ def set_cluster_basic_file(request):
 	rs = json.dumps({"status":0})
 	return HttpResponse(rs);
 
+
+def set_cluster_storage_file(request):
+	#get the data
+	data = json.loads(request.body)
+	# print "============storage data================="
+	# print data
+	file_lines = [];
+	file_lines.append("[storage_class]\n")
+	for storage_class in data["storage_class"]:
+		file_lines.append(storage_class+"\n")
+	file_lines.append("\n");
+	file_lines.append("[storage_group]\n")
+	for storage_group  in data["storage_group"]:
+		file_lines.append(storage_group["group_name"]+"   ")
+		file_lines.append(storage_group["friendly_name"]+"   ")
+		file_lines.append(storage_group["storage_class"]+"   ")
+		file_lines.append("\n")
+	
+	#write the files
+	write_file("cluster_storage",file_lines)
+	#response the data
+	rs = json.dumps({"status":0})
+	return HttpResponse(rs);
+
+
+
+
 def write_file(file_type,file_content):
 	base_dir = os.path.dirname(os.path.dirname(__file__))
 	file_path = "";
 	if(file_type == "cluster_basic"):
 		file_path = base_dir + "/files/cluster.basic.manifest"
+	if(file_type == "cluster_storage"):
+		file_path = base_dir + "/files/cluster.storage.manifest"
 
 	fileHandler = open(file_path,"w")
 	fileHandler.writelines(file_content)
