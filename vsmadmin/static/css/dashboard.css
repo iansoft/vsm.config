@@ -64,6 +64,7 @@ hr{
     margin-top: 25px;
     font-size: 18px;
     display:inline-block;
+    color: #337ab7;
 }
 
 .option-bar{
@@ -127,7 +128,7 @@ hr{
 
 
 #tProfiles thead tr th{
-    width: 185px;
+    width: 310px;
     text-align: center;
     border-bottom: none;
 }
@@ -142,4 +143,21 @@ hr{
 .form-option-bar{
     text-align: right;
     height: 80px;
+}
+
+.profile-detail{
+   /* width: 600px;
+    border: 1px solid #ccc;*/
+}
+
+.profile-detail label{
+    width: 120px;
+}
+
+.row-option a{
+    margin-left: 10px;
+}
+
+.popover{
+    width: 500px;
 }

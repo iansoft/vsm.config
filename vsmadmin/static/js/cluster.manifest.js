@@ -2,6 +2,8 @@ $(document).ready(function(){
 	//init the data
 	InitData();
 
+	//Init Profile Detail
+	//InitProfileDetail();
 });
 
 
@@ -201,6 +203,7 @@ function SaveStorageGroup(obj){
 	$("#tStorageGroup>tbody").append(html);	
 }
 
+
 //remove the storage group
 function RemoveStorageGroup(obj){
 	if(confirm("Remove the storage group?")==true){
@@ -208,4 +211,137 @@ function RemoveStorageGroup(obj){
 	}
 }
 
+//add the storage group
+function AddProfileGroup(){
+	var html = "";
+	html += "<tr class='profile-row'>";
+	// html += "<form class='form-inline'>";
+	html += "	<td><input class='form-control' type='textbox'/></td>";
+	html += "	<td><input class='form-control' type='textbox' /></td>";
+	html += "	<td><input class='form-control' type='textbox' /></td>";
+	html += "	<td><input class='form-control' type='textbox' /></td>";
+	html += "	<td><input class='form-control' type='textbox' /></td>";
+	html += "	<td>";
+	html += "		<a class='btn btn-success'  onclick='SaveProfileGroup(this)'>save</a>";
+	html += "	    <a class='btn btn-danger'  onclick='RemoveProfile(this)'>cancel</a>";
+	html += "	</td>";
+	// html += "</form>";
+	html += "</tr>";
+
+	$("#tProfiles>tbody").append(html);
+}
+
+
+//save the profile group
+function SaveProfileGroup(obj){
+	var ctrlProfileName= obj.parentNode.parentNode.children[0].children[0];
+	var ctrPGNumber= obj.parentNode.parentNode.children[1].children[0];
+	var ctrPluginName= obj.parentNode.parentNode.children[2].children[0];
+	var ctrlPluginPath= obj.parentNode.parentNode.children[3].children[0];
+	var ctrlPluginPath= obj.parentNode.parentNode.children[4].children[0];
+
+	var is_pass = true;
+	if(ctrlGroupName.value == ""){
+		ctrlGroupName.style.border = "1px solid red";
+		is_pass = false;
+	}
+
+	if(ctrFriendlyName.value == ""){
+		ctrFriendlyName.style.border = "1px solid red";
+		is_pass = false;
+	}
+
+	if(ctrlStorageName.value == ""){
+		ctrlStorageName.style.border = "1px solid red";
+		is_pass = false;
+	}
+
+	if(is_pass == false){
+		return false;
+	}
+
+	//save the items
+	var html = "";
+	html += "<tr>";
+	html += "	<td>"+ctrlGroupName.value+"</td>";
+	html += "	<td>"+ctrFriendlyName.value+"</td>";
+	html += "	<td>"+ctrlStorageName.value+"</td>";
+	html += "	<td><a class='btn btn-danger' onclick='RemoveStorageGroup(this)'>remove</a></td>";
+	html += "</tr>";
+
+	//first remove the row
+	obj.parentNode.parentNode.remove();
+	$("#tStorageGroup>tbody").append(html);	
+}
+
+
+//remove the ec_profile
+function RemoveProfile(obj){
+	if(confirm("Remove the profile?")==true){
+		obj.parentNode.parentNode.remove();
+	}
+}
+
+//see the ec_profile detail
+// function InitProfileDetail(){
+// 	//prepend
+// 	var profile_rows = $(".profile-row");
+// 	for(var i=0;i<profile_rows.length;i++){
+// 		var detail_html = "";
+// 		detail_html += "<div class='profile-detail'>";
+// 		detail_html += "	<label>profile name:</label>";
+// 		detail_html += "	<span>"+profile_rows[i].children[0].innerHTML+"</span>";
+// 		detail_html += "	<br>";
+// 		detail_html += "	<label>pg number:</label>";
+// 		detail_html += "	<span>"+profile_rows[i].children[2].innerHTML+"</span>";
+// 		detail_html += "	<br>";
+// 		detail_html += "	<label>plugin name:</label>";
+// 		detail_html += "	<span>"+profile_rows[i].children[1].innerHTML+"</span>";
+// 		detail_html += "	<br>";
+// 		detail_html += "	<label>profile path:</label>";
+// 		detail_html += "	<span>"+profile_rows[i].children[3].innerHTML+"</span>";
+// 		detail_html += "	<br>";
+// 		// detail_html += "	<label>data:</label>";
+// 		// detail_html += "	<span><em>"+profile_rows[i].children[4].innerHTML+"</em></span>";
+// 		// detail_html += "	<br>";
+// 		detail_html += "</div>";
+
+
+
+// 		var html_btnProfileDetail = GenerateProfileDetailButton("Profile Detail",detail_html);
+// 		profile_rows[i].children[5].innerHTML = "";
+// 		profile_rows[i].children[5].innerHTML += html_btnProfileDetail;
+// 		profile_rows[i].children[5].innerHTML += "<a class='btn btn-danger' onclick='RemoveProfile(this)'>remove</a>";
+// 		var data_html = "<em>"+profile_rows[i].children[4].innerHTML+"</em>"
+// 		console.log(data_html);
+// 	}
+
+// 	//register the popover
+//     $("a[data-toggle=popover]").popover();
+// }
+
+
+
+
+// function GenerateProfileDetailButton(popover_title,popover_content){
+// 	var html = "";
+// 		html += "<a class='btn btn-success' tabindex='0' ";
+// 		html += " role='button' ";
+// 		html += " data-toggle='popover' ";
+// 		html += " data-container='body' ";
+// 		html += " data-placement='left' ";
+// 		html += " data-trigger='click' ";
+// 		html += " data-html='true' ";
+// 		html += " onblur='HidePopover()' ";
+// 		html += " title='"+popover_title+"' ";
+// 		html += " data-content=\""+popover_content+"\">";
+// 		html += "detail";
+// 		html += "</a>";
+// 	return html;
+// }
+
+
+// function HidePopover(){
+// 	$(".popover").popover("hide");
+// }
 

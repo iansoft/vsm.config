@@ -67,7 +67,7 @@
           <th>group name</th>
           <th>friendly name</th>
           <th>storage class</th>
-          <th style="width:200px;"></th>
+          <th style="width:230px;"></th>
         </tr>
       </thead>
       <tbody>
@@ -89,33 +89,50 @@
     </table>
     </form>
 </div>
+
+
 <!--Profiles-->
-<!-- <div id="divProfilesForm" class="module-wrap">
-    <span class="module-title">Profiles</span>
+<div id="divProfilesForm" class="module-wrap">
+    <span class="module-title">EC_Profiles</span>
     <button btn="btnSaveProfiles" class="btn btn-success btn-right">Save</button>
     <hr>
     <div class="option-bar">
-        <button btn="btnAddProfile" class="btn btn-primary">Add Profile</button>
+        <a btn="btnAddProfile" class="btn btn-primary" onclick="AddProfileGroup()">Add EC_Profile</a>
     </div>
     <table id="tProfiles" class="table table-bordered">
       <thead>
         <tr>
           <th>name</th>
-          <th>plugin</th>
-          <th>plugin path</th>
-          <th>pg_num value</th>
-          <th>json values</th>
+          <th>plugin name</th>
+          <th>pg number</th>
+          <th>plugin_path</th>
+          <th>plugin_path</th>
+          <th style="width:230px;"></th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td colspan="5">
-            no data
-          </td>
-        </tr>
+        {% for profile in cluster_profile_data %}
+          <tr class="profile-row">
+            <td class='profile-name'>{{profile.name}}</td>
+            <td class='profile-pg-number'>{{profile.pg_num}}</td>
+            <td class='profile-plugin-name'>{{profile.plugin_name}}</td>
+            <td class='profile-plugin-path' >{{profile.plugin_path}}</td>
+            <td class='profile-data'>{{profile.data}}</td>
+            <td class="row-option">
+                <a class="btn btn-danger" onclick="RemoveProfile(this)">remove</a>
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="4">
+              no data
+            </td>
+          </tr>
+        {% endfor %}
       </tbody>
     </table>
-</div> -->
+
+</div>
 
 <!--Cache-->
 <!-- <form class="form-inline">
