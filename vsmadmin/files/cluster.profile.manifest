@@ -1,5 +1,6 @@
 [ec_profiles]
-default_profile1  /usr/lib64/ceph/erasure-code1  jerasure1  31  {"k1":2,"m":1,"technique":"reed_sol_van"}
-default_profile2  /usr/lib64/ceph/erasure-code2  jerasure2  32  {"k2":2,"m":1,"technique":"reed_sol_van"}
-default_profile3  /usr/lib64/ceph/erasure-code3  jerasure3  33  {"k3":2,"m":1,"technique":"reed_sol_van"}
-default_profile4  /usr/lib64/ceph/erasure-code4  jerasure4  34  {"k4":2,"m":1,"technique":"reed_sol_van"}
+#[profile-name] [path-to-plugin] [plugin-name] [pg_num value] [json format key/value]
+default_profile1   /usr/lib64/ceph/erasure-code1   jerasure1   31   {"k1":2,"m":1,"technique":"reed_sol_van"}   
+default_profile3   /usr/lib64/ceph/erasure-code3   jerasure3   33   {"k3":2,"m":1,"technique":"reed_sol_van"}   
+default_profile4   /usr/lib64/ceph/erasure-code4   jerasure4   34   {"k4":2,"m":1,"technique":"reed_sol_van"}   
+default_profile5   /usr/lib64/ceph/erasure-code5   jerasure5   35   {"k5":2,"m":1,"technique":"reed_sol_van"}   

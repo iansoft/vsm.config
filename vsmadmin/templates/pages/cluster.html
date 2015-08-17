@@ -1,3 +1,5 @@
+ <form class="form-inline">
+
 <!--Basic-->
 <div id="divBasicForm" class="module-wrap">
     <span class="module-title">Basic</span>
@@ -8,7 +10,6 @@
     </div>
     
     <!-- {{cluster_basic_data}} -->
-    <form class="form-inline">
       <div class="form-group">
         <label class="label-1" for="lblCluster">cluster</label>
         <input id="txtCluster" type="textbox" class="form-control" value="{{config_data.controller_address}}" readOnly="true"/>
@@ -35,7 +36,6 @@
         <label class="label-1" for="lblCephClusterAddress">ceph cluster addr.</label>
         <input id="lblCephClusterAddress" type="textbox" class="form-control" value="{{cluster_basic_data.ceph_cluster_addr}}" placeholder="192.168.0.1/10" />
       </div>
-    </form>
 </div>
 <!--Storage-->
 <div id="divStorageForm" class="module-wrap">
@@ -47,7 +47,6 @@
     </div>
 
     <!-- {{cluster_storage_data}} -->
-    <form class="form-inline">
       <div class="form-group">
         <label class="label-1" for="lblStorageClass">storage class</label>
         <input id="txtStorageClass" type="textbox" class="form-control" />
@@ -87,15 +86,17 @@
         {% endfor %}
       </tbody>
     </table>
-    </form>
 </div>
 
 
 <!--Profiles-->
 <div id="divProfilesForm" class="module-wrap">
     <span class="module-title">EC_Profiles</span>
-    <button btn="btnSaveProfiles" class="btn btn-success btn-right">Save</button>
+    <button btn="btnSaveProfiles" class="btn btn-success btn-right" onclick='SaveClusterProfile()'>Save</button>
     <hr>
+    <!--message tip-->
+    <div id="divProfileMessage">
+    </div>
     <div class="option-bar">
         <a btn="btnAddProfile" class="btn btn-primary" onclick="AddProfileGroup()">Add EC_Profile</a>
     </div>
@@ -103,10 +104,10 @@
       <thead>
         <tr>
           <th>name</th>
-          <th>plugin name</th>
           <th>pg number</th>
-          <th>plugin_path</th>
-          <th>plugin_path</th>
+          <th>plugin name</th>
+          <th>plugin path</th>
+          <th>plugin data</th>
           <th style="width:230px;"></th>
         </tr>
       </thead>
@@ -135,106 +136,110 @@
 </div>
 
 <!--Cache-->
-<!-- <form class="form-inline">
 <div id="divCacheForm" class="module-wrap">
     <span class="module-title">Cache</span>
-    <button btn="btnSaveCache" class="btn btn-success btn-right">Save</button>
+    <a btn="btnSaveCache" class="btn btn-success btn-right" onclick="SaveClusterCache()">Save</a>
     <hr>
-
+     <!--message tip-->
+    <div id="divCacheMessage">
+    </div>
       <div class="form-group">
-        <label class="label-2" for="lblFileSystem">ct hit set count</label>
-        <input id="lblFileSystem"  type="textbox" class="form-control" />
+        <label class="label-2" for="txt_ct_hit_set_count">ct hit set count</label>
+        <input id="txt_ct_hit_set_count"  type="textbox" class="form-control txt-cache" value="{{cluster_cache_data.ct_hit_set_count}}" />
       </div>
       <div class="form-group">
-        <label class="label-2" for="lblFileSystem">ct hit set period s</label>
-        <input id="lblFileSystem"  type="textbox" class="form-control" />
-      </div>
-      <br>
-      <br>
-      <div class="form-group">
-        <label class="label-2" for="lblFileSystem">ct target max objects</label>
-        <input id="lblFileSystem"  type="textbox" class="form-control" />
-      </div>
-      <div class="form-group">
-        <label class="label-2" for="lblFileSystem">ct target max mem mb</label>
-        <input id="lblFileSystem"  type="textbox" class="form-control" />
+        <label class="label-2" for="txt_ct_hit_set_period_s">ct hit set period s</label>
+        <input id="txt_ct_hit_set_period_s"  type="textbox" class="form-control txt-cache" value="{{cluster_cache_data.ct_hit_set_period_s}}" />
       </div>
       <br>
       <br>
       <div class="form-group">
-        <label class="label-2" for="lblFileSystem">ct target dirty ratio</label>
-        <input id="lblFileSystem"  type="textbox" class="form-control" />
+        <label class="label-2" for="txt_ct_target_max_objects">ct target max objects</label>
+        <input id="txt_ct_target_max_objects"  type="textbox" class="form-control txt-cache" value="{{cluster_cache_data.ct_target_max_objects}}" />
       </div>
       <div class="form-group">
-        <label class="label-2" for="lblFileSystem">ct target full ratio</label>
-        <input id="lblFileSystem"  type="textbox" class="form-control" />
+        <label class="label-2" for="txt_ct_target_max_mem_mb">ct target max mem mb</label>
+        <input id="txt_ct_target_max_mem_mb"  type="textbox" class="form-control txt-cache" value="{{cluster_cache_data.ct_target_max_mem_mb}}" />
       </div>
       <br>
       <br>
       <div class="form-group">
-        <label class="label-2" for="lblFileSystem">ct target min flush age m</label>
-        <input id="lblFileSystem"  type="textbox" class="form-control" />
+        <label class="label-2" for="txt_ct_target_dirty_ratio">ct target dirty ratio</label>
+        <input id="txt_ct_target_dirty_ratio"  type="textbox" class="form-control txt-cache" value="{{cluster_cache_data.ct_target_dirty_ratio}}" />
       </div>
       <div class="form-group">
-        <label class="label-2" for="lblFileSystem">ct target min evict age m</label>
-        <input id="lblFileSystem"  type="textbox" class="form-control" />
+        <label class="label-2" for="txt_ct_target_full_ratio">ct target full ratio</label>
+        <input id="txt_ct_target_full_ratio"  type="textbox" class="form-control txt-cache" value="{{cluster_cache_data.ct_target_full_ratio}}" />
+      </div>
+      <br>
+      <br>
+      <div class="form-group">
+        <label class="label-2" for="txt_ct_target_min_flush_age_m">ct target min flush age m</label>
+        <input id="txt_ct_target_min_flush_age_m"  type="textbox" class="form-control txt-cache" value="{{cluster_cache_data.ct_target_min_flush_age_m}}" />
+      </div>
+      <div class="form-group">
+        <label class="label-2" for="txt_ct_target_min_evict_age_m">ct target min evict age m</label>
+        <input id="txt_ct_target_min_evict_age_m"  type="textbox" class="form-control txt-cache" value="{{cluster_cache_data.ct_target_min_evict_age_m}}" />
       </div>
 </div>
- -->
+
 <!--Settings-->
-<!-- <div id="divSettingsForm" class="module-wrap">
+<div id="divSettingsForm" class="module-wrap">
     <span class="module-title">Settings</span>
-    <button btn="btnSaveSettings" class="btn btn-success btn-right">Save</button>
+    <a btn="btnSaveSettings" class="btn btn-success btn-right" onclick="SaveClusterSettings()">Save</a>
     <hr>
-      <div class="form-group">
-        <label class="label-2" for="lblFileSystem">storage group near full threshold</label>
-        <input id="lblFileSystem"  type="textbox" class="form-control" />
+      <!--message tip-->
+      <div id="divSettingMessage">
       </div>
       <div class="form-group">
-        <label class="label-2" for="lblFileSystem">storage group full threshold</label>
-        <input id="lblFileSystem"  type="textbox" class="form-control" />
-      </div>
-    <br>
-    <br>
-      <div class="form-group">
-        <label class="label-2" for="lblFileSystem">ceph near full threshold</label>
-        <input id="lblFileSystem"  type="textbox" class="form-control" />
+        <label class="label-2" for="txt_storage_group_near_full_threshold">storage group near full threshold</label>
+         <input id="txt_storage_group_near_full_threshold"  type="textbox" class="form-control txt-settings" value="{{cluster_settings_data.storage_group_near_full_threshold}}" />
       </div>
       <div class="form-group">
-        <label class="label-2" for="lblFileSystem">ceph full threshold</label>
-        <input id="lblFileSystem"  type="textbox" class="form-control" />
+        <label class="label-2" for="txt_storage_group_full_threshold">storage group full threshold</label>
+        <input id="txt_storage_group_full_threshold"  type="textbox" class="form-control txt-settings" value="{{cluster_settings_data.storage_group_full_threshold}}" />
       </div>
     <br>
     <br>
       <div class="form-group">
-        <label class="label-2" for="lblFileSystem">pg count factor</label>
-        <input id="lblFileSystem"  type="textbox" class="form-control" />
+        <label class="label-2" for="txt_ceph_near_full_threshold">ceph near full threshold</label>
+        <input id="txt_ceph_near_full_threshold"  type="textbox" class="form-control txt-settings" value="{{cluster_settings_data.ceph_near_full_threshold}}" />
       </div>
       <div class="form-group">
-        <label class="label-2" for="lblFileSystem">heartbeat interval</label>
-        <input id="lblFileSystem"  type="textbox" class="form-control" />
-      </div>
-    <br>
-    <br>
-      <div class="form-group">
-        <label class="label-2" for="lblFileSystem">osd hearbeat interval</label>
-        <input id="lblFileSystem"  type="textbox" class="form-control" />
-      </div>
-      <div class="form-group">
-        <label class="label-2" for="lblFileSystem">osd hearbeat grace</label>
-        <input id="lblFileSystem"  type="textbox" class="form-control" />
+        <label class="label-2" for="txt_ceph_full_threshold">ceph full threshold</label>
+        <input id="txt_ceph_full_threshold"  type="textbox" class="form-control txt-settings" value="{{cluster_settings_data.ceph_full_threshold}}" />
       </div>
     <br>
     <br>
       <div class="form-group">
-        <label class="label-2" for="lblFileSystem">disk near full threshold</label>
-        <input id="lblFileSystem"  type="textbox" class="form-control" />
+        <label class="label-2" for="txt_pg_count_factor">pg count factor</label>
+         <input id="txt_pg_count_factor"  type="textbox" class="form-control txt-settings" value="{{cluster_settings_data.pg_count_factor}}" />
       </div>
       <div class="form-group">
-        <label class="label-2" for="lblFileSystem">disk full threshold</label>
-        <input id="lblFileSystem"  type="textbox" class="form-control" />
+        <label class="label-2" for="txt_heartbeat_interval">heartbeat interval</label>
+        <input id="txt_heartbeat_interval"  type="textbox" class="form-control txt-settings" value="{{cluster_settings_data.heartbeat_interval}}" />
+      </div>
+    <br>
+    <br>
+      <div class="form-group">
+        <label class="label-2" for="txt_osd_heartbeat_interval">osd hearbeat interval</label>
+         <input id="txt_osd_heartbeat_interval"  type="textbox" class="form-control txt-settings" value="{{cluster_settings_data.osd_heartbeat_interval}}" />
+      </div>
+      <div class="form-group">
+        <label class="label-2" for="txt_osd_heartbeat_grace">osd hearbeat grace</label>
+         <input id="txt_osd_heartbeat_grace"  type="textbox" class="form-control txt-settings" value="{{cluster_settings_data.osd_heartbeat_grace}}" />
+      </div>
+    <br>
+    <br>
+      <div class="form-group">
+        <label class="label-2" for="txt_disk_near_full_threshold">disk near full threshold</label>
+        <input id="txt_disk_near_full_threshold"  type="textbox" class="form-control txt-settings" value="{{cluster_settings_data.disk_near_full_threshold}}" />
+      </div>
+      <div class="form-group">
+        <label class="label-2" for="txt_disk_full_threshold">disk full threshold</label>
+        <input id="txt_disk_full_threshold"  type="textbox" class="form-control txt-settings" value="{{cluster_settings_data.disk_full_threshold}}" />
       </div>
 </div>
 
 
-</from>  -->
+</form>

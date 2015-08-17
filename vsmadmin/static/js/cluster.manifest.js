@@ -116,7 +116,161 @@ function SaveClusterStorage(){
 
         }
     });
+}
 
+//save the cluster profile info.
+function SaveClusterProfile(){
+	var cluster_profile_data = {
+		profiles:[]
+	};
+
+	$("#tProfiles>tbody>tr").each(function(){
+		var profile_name = this.children[0].innerHTML;
+		var pg_number = this.children[1].innerHTML;
+		var plugin_name = this.children[2].innerHTML;
+		var plugin_path = this.children[3].innerHTML;
+		var profile_data = this.children[4].innerHTML;
+		var profile_item = {
+			"profile_name":profile_name,
+			"pg_number":pg_number,
+			"plugin_name":plugin_name,
+			"plugin_path":plugin_path,
+			"profile_data":profile_data,
+		}
+		cluster_profile_data.profiles.push(profile_item);
+	});
+
+	var token = $("input[name=csrfmiddlewaretoken]").val();
+	$.ajax({
+        type: "post",
+        url: "/manifest/set_cluster_profile_file/",
+        data: JSON.stringify(cluster_profile_data),
+        dataType:"json",
+        success: function(data){
+        	ShowMessage($("#divProfileMessage"),2,"Save the cluster profile info. successfully!");
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+           if(XMLHttpRequest.status == 500){
+           		ShowMessage($("#divProfileMessage"),0,"INTERNAL SERVER ERROR!");
+           }
+        },
+        headers: {
+            "X-CSRFToken": token
+        },
+        complete: function(){
+
+        }
+    });
+}
+
+function SaveClusterCache(){
+	var is_pass = true;
+	var txt_cache_list = $(".txt-cache");
+	for(var i=0;i<txt_cache_list.length;i++){
+		var ctrl = txt_cache_list[i];
+		if(ctrl.value == ""){
+			ctrl.style.border = "1px solid red";
+			is_pass = false
+		}
+		else{
+			ctrl.style.border = "1px solid #ccc";
+		}
+	}
+
+	$("#divCacheMessage").empty();
+	if(is_pass == false){
+		ShowMessage($("#divCacheMessage"),1,"the cache item should not be empty!");
+		return false;
+	}
+
+	var cluster_cache_data = {
+		"ct_hit_set_count":$("#txt_ct_hit_set_count").val(),
+		"ct_hit_set_period_s":$("#txt_ct_hit_set_period_s").val(),
+		"ct_target_max_objects":$("#txt_ct_target_max_objects").val(),
+		"ct_target_max_mem_mb":$("#txt_ct_target_max_mem_mb").val(),
+		"ct_target_dirty_ratio":$("#txt_ct_target_dirty_ratio").val(),
+		"ct_target_full_ratio":$("#txt_ct_target_full_ratio").val(),
+		"ct_target_min_flush_age_m":$("#txt_ct_target_min_flush_age_m").val(),
+		"ct_target_min_evict_age_m":$("#txt_ct_target_min_evict_age_m").val(),
+	}
+
+	var token = $("input[name=csrfmiddlewaretoken]").val();
+	$.ajax({
+        type: "post",
+        url: "/manifest/set_cluster_cache_file/",
+        data: JSON.stringify(cluster_cache_data),
+        dataType:"json",
+        success: function(data){
+        	ShowMessage($("#divCacheMessage"),2,"Save the cluster cache info. successfully!");
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+           if(XMLHttpRequest.status == 500){
+           		ShowMessage($("#divCacheMessage"),0,"INTERNAL SERVER ERROR!");
+           }
+        },
+        headers: {
+            "X-CSRFToken": token
+        },
+        complete: function(){
+
+        }
+    });
+}
+
+function SaveClusterSettings(){
+	var is_pass = true;
+	var txt_settings_list = $(".txt-settings");
+	for(var i=0;i<txt_settings_list.length;i++){
+		var ctrl = txt_settings_list[i];
+		if(ctrl.value == ""){
+			ctrl.style.border = "1px solid red";
+			is_pass = false
+		}
+		else{
+			ctrl.style.border = "1px solid #ccc";
+		}
+	}
+
+	$("#divSettingMessage").empty();
+	if(is_pass == false){
+		ShowMessage($("#divSettingMessage"),1,"the settings item should not be empty!");
+		return false;
+	}
+
+	var cluster_settings_data = {
+		"storage_group_near_full_threshold":$("#txt_storage_group_near_full_threshold").val(),
+		"storage_group_full_threshold":$("#txt_storage_group_full_threshold").val(),
+		"ceph_near_full_threshold":$("#txt_ceph_near_full_threshold").val(),
+		"ceph_full_threshold":$("#txt_ceph_full_threshold").val(),
+		"pg_count_factor":$("#txt_pg_count_factor").val(),
+		"heartbeat_interval":$("#txt_heartbeat_interval").val(),
+		"osd_heartbeat_interval":$("#txt_osd_heartbeat_interval").val(),
+		"osd_heartbeat_grace":$("#txt_osd_heartbeat_grace").val(),
+		"disk_near_full_threshold":$("#txt_disk_near_full_threshold").val(),
+		"disk_full_threshold":$("#txt_disk_full_threshold").val(),
+	}
+
+	var token = $("input[name=csrfmiddlewaretoken]").val();
+	$.ajax({
+        type: "post",
+        url: "/manifest/set_cluster_settings_file/",
+        data: JSON.stringify(cluster_settings_data),
+        dataType:"json",
+        success: function(data){
+        	ShowMessage($("#divSettingMessage"),2,"Save the cluster settings info. successfully!");
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+           if(XMLHttpRequest.status == 500){
+           		ShowMessage($("#divSettingMessage"),0,"INTERNAL SERVER ERROR!");
+           }
+        },
+        headers: {
+            "X-CSRFToken": token
+        },
+        complete: function(){
+
+        }
+    });
 }
 
 //add the storage class
@@ -231,28 +385,37 @@ function AddProfileGroup(){
 	$("#tProfiles>tbody").append(html);
 }
 
-
 //save the profile group
 function SaveProfileGroup(obj){
 	var ctrlProfileName= obj.parentNode.parentNode.children[0].children[0];
 	var ctrPGNumber= obj.parentNode.parentNode.children[1].children[0];
 	var ctrPluginName= obj.parentNode.parentNode.children[2].children[0];
 	var ctrlPluginPath= obj.parentNode.parentNode.children[3].children[0];
-	var ctrlPluginPath= obj.parentNode.parentNode.children[4].children[0];
+	var ctrlPluginData= obj.parentNode.parentNode.children[4].children[0];
 
 	var is_pass = true;
-	if(ctrlGroupName.value == ""){
-		ctrlGroupName.style.border = "1px solid red";
+	if(ctrlProfileName.value == ""){
+		ctrlProfileName.style.border = "1px solid red";
 		is_pass = false;
 	}
 
-	if(ctrFriendlyName.value == ""){
-		ctrFriendlyName.style.border = "1px solid red";
+	if(ctrPGNumber.value == ""){
+		ctrPGNumber.style.border = "1px solid red";
 		is_pass = false;
 	}
 
-	if(ctrlStorageName.value == ""){
-		ctrlStorageName.style.border = "1px solid red";
+	if(ctrPluginName.value == ""){
+		ctrPluginName.style.border = "1px solid red";
+		is_pass = false;
+	}
+
+	if(ctrlPluginPath.value == ""){
+		ctrlPluginPath.style.border = "1px solid red";
+		is_pass = false;
+	}
+
+	if(ctrlPluginData.value == ""){
+		ctrlPluginData.style.border = "1px solid red";
 		is_pass = false;
 	}
 
@@ -262,18 +425,19 @@ function SaveProfileGroup(obj){
 
 	//save the items
 	var html = "";
-	html += "<tr>";
-	html += "	<td>"+ctrlGroupName.value+"</td>";
-	html += "	<td>"+ctrFriendlyName.value+"</td>";
-	html += "	<td>"+ctrlStorageName.value+"</td>";
-	html += "	<td><a class='btn btn-danger' onclick='RemoveStorageGroup(this)'>remove</a></td>";
+	html += "<tr class='profile-row'>";
+	html += "	<td>"+ctrlProfileName.value+"</td>";
+	html += "	<td>"+ctrPGNumber.value+"</td>";
+	html += "	<td>"+ctrPluginName.value+"</td>";
+	html += "	<td>"+ctrlPluginPath.value+"</td>";
+	html += "	<td>"+ctrlPluginData.value+"</td>";
+	html += "	<td><a class='btn btn-danger' onclick='RemoveProfile(this)'>remove</a></td>";
 	html += "</tr>";
 
 	//first remove the row
 	obj.parentNode.parentNode.remove();
-	$("#tStorageGroup>tbody").append(html);	
+	$("#tProfiles>tbody").append(html);	
 }
-
 
 //remove the ec_profile
 function RemoveProfile(obj){

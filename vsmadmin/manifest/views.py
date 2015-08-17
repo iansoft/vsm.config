@@ -14,12 +14,16 @@ def index(request):
 	cluster_basic_data = read_cluster_basic_manifest()
 	cluster_storage_data = read_cluster_storage_manifest()
 	cluster_profile_data = read_cluster_profile_manifest()
+	cluster_cache_data = read_cluster_cache_manifest()
+	cluster_settings_data = read_cluster_settings_manifest();
 
 	context_data = {
 		"config_data": config_data,
 		"cluster_basic_data":cluster_basic_data,
 		"cluster_storage_data":cluster_storage_data,
 		"cluster_profile_data":cluster_profile_data,
+		"cluster_cache_data":cluster_cache_data,
+		"cluster_settings_data":cluster_settings_data,
 	}
 	context = RequestContext(request, context_data)
 	return HttpResponse(template.render(context))
@@ -136,12 +140,17 @@ def read_cluster_profile_manifest():
 	#format: [profile-name] [path-to-plugin] [plugin-name] [pg_num value] [json format key/value]
 	cluster_profiles = []
 	item_flag = ""
+	group_counter = 0
 	for item in file_lines:
 		#get the cluster mark
 		if item == "[ec_profiles]":
 			item_flag = "ec_profiles"
 			continue
 		if item_flag == "ec_profiles":
+			group_counter = group_counter + 1
+			#ignore the comment line
+			if(group_counter == 1):
+				continue
 			item = re.sub("(\s+)","|",item)
 			profile_items = re.split("(\|)",item)
 			profile_items_data = {
@@ -155,6 +164,99 @@ def read_cluster_profile_manifest():
 
 	return cluster_profiles
 
+def read_cluster_cache_manifest():
+	base_dir = os.path.dirname(os.path.dirname(__file__))
+	manifest_path = base_dir + "/files/cluster.cache.manifest"
+	fileHandler = open(manifest_path,"a+")
+	file_lines = fileHandler.readlines()
+	#remove all the '\n' item
+	file_lines = filter(lambda a: a != '\n', file_lines)
+	file_lines = [item.replace('\n','') for item in file_lines]
+
+	cluster_cache = {
+		"ct_hit_set_count":0,
+		"ct_hit_set_period_s":0,
+		"ct_target_max_objects":0,
+		"ct_target_max_mem_mb":0,
+		"ct_target_dirty_ratio":0,
+		"ct_target_full_ratio":0,
+		"ct_target_min_flush_age_m":0,
+		"ct_target_min_evict_age_m":0
+	}
+
+	for item in file_lines:
+		item = re.sub("(\s+)","|",item)
+		cache_items = re.split("(\|)",item)
+		#print item
+		print cache_items
+		if cache_items[0] == "ct_hit_set_count":
+			cluster_cache["ct_hit_set_count"] = cache_items[2]
+		if cache_items[0] == "ct_hit_set_period_s":
+			cluster_cache["ct_hit_set_period_s"] = cache_items[2]
+		if cache_items[0] == "ct_target_max_objects":
+			cluster_cache["ct_target_max_objects"] = cache_items[2]
+		if cache_items[0] == "ct_target_max_mem_mb":
+			cluster_cache["ct_target_max_mem_mb"] = cache_items[2]
+		if cache_items[0] == "ct_target_dirty_ratio":
+			cluster_cache["ct_target_dirty_ratio"] = cache_items[2]
+		if cache_items[0] == "ct_target_full_ratio":
+			cluster_cache["ct_target_full_ratio"] = cache_items[2]
+		if cache_items[0] == "ct_target_min_flush_age_m":
+			cluster_cache["ct_target_min_flush_age_m"] = cache_items[2]
+		if cache_items[0] == "ct_target_min_evict_age_m":
+			cluster_cache["ct_target_min_evict_age_m"] = cache_items[2]
+
+	return cluster_cache
+
+def read_cluster_settings_manifest():
+	base_dir = os.path.dirname(os.path.dirname(__file__))
+	manifest_path = base_dir + "/files/cluster.settings.manifest"
+	fileHandler = open(manifest_path,"a+")
+	file_lines = fileHandler.readlines()
+	#remove all the '\n' item
+	file_lines = filter(lambda a: a != '\n', file_lines)
+	file_lines = [item.replace('\n','') for item in file_lines]
+
+	cluster_cache = {
+		"storage_group_near_full_threshold":0,
+		"storage_group_full_threshold":0,
+		"ceph_near_full_threshold":0,
+		"ceph_full_threshold":0,
+		"osd_heartbeat_interval":0,
+		"osd_heartbeat_grace":0,
+		"disk_near_full_threshold":0,
+		"disk_full_threshold":0,
+		"pg_count_factor":0,
+		"heartbeat_interval":0,
+	}
+
+	for item in file_lines:
+		item = re.sub("(\s+)","|",item)
+		cache_items = re.split("(\|)",item)
+		#print item
+		print cache_items
+		if cache_items[0] == "storage_group_near_full_threshold":
+			cluster_cache["storage_group_near_full_threshold"] = cache_items[2]
+		if cache_items[0] == "storage_group_full_threshold":
+			cluster_cache["storage_group_full_threshold"] = cache_items[2]
+		if cache_items[0] == "ceph_near_full_threshold":
+			cluster_cache["ceph_near_full_threshold"] = cache_items[2]
+		if cache_items[0] == "ceph_full_threshold":
+			cluster_cache["ceph_full_threshold"] = cache_items[2]
+		if cache_items[0] == "osd_heartbeat_interval":
+			cluster_cache["osd_heartbeat_interval"] = cache_items[2]
+		if cache_items[0] == "osd_heartbeat_grace":
+			cluster_cache["osd_heartbeat_grace"] = cache_items[2]
+		if cache_items[0] == "disk_near_full_threshold":
+			cluster_cache["disk_near_full_threshold"] = cache_items[2]
+		if cache_items[0] == "disk_full_threshold":
+			cluster_cache["disk_full_threshold"] = cache_items[2]
+		if cache_items[0] == "pg_count_factor":
+			cluster_cache["pg_count_factor"] = cache_items[2]
+		if cache_items[0] == "heartbeat_interval":
+			cluster_cache["heartbeat_interval"] = cache_items[2]
+
+	return cluster_cache
 
 def set_cluster_basic_file(request):
 	#get the data
@@ -200,6 +302,84 @@ def set_cluster_storage_file(request):
 	rs = json.dumps({"status":0})
 	return HttpResponse(rs);
 
+def set_cluster_profile_file(request):
+	#get the data 
+	data = json.loads(request.body)
+	file_lines = [];
+	file_lines.append("[ec_profiles]\n")
+	file_lines.append("#[profile-name] [path-to-plugin] [plugin-name] [pg_num value] [json format key/value]\n")
+	for profile in data["profiles"]:
+		file_lines.append(profile["profile_name"]+"   ")
+		file_lines.append(profile["pg_number"]+"   ")
+		file_lines.append(profile["plugin_name"]+"   ")
+		file_lines.append(profile["plugin_path"]+"   ")
+		file_lines.append(profile["profile_data"]+"   ")
+		file_lines.append("\n")
+
+	#write the files
+	write_file("cluster_profile",file_lines)
+	#response the data
+	rs = json.dumps({"status":0})
+	return HttpResponse(rs);
+
+def set_cluster_cache_file(request):
+	#get the data 
+	data = json.loads(request.body)
+	file_lines = []
+	file_lines.append("ct_hit_set_count   ")
+	file_lines.append(data["ct_hit_set_count"]+"\n")
+	file_lines.append("ct_hit_set_period_s   ")
+	file_lines.append(data["ct_hit_set_period_s"]+"\n")
+	file_lines.append("ct_target_max_objects   ")
+	file_lines.append(data["ct_target_max_objects"]+"\n")
+	file_lines.append("ct_target_max_mem_mb   ")
+	file_lines.append(data["ct_target_max_mem_mb"]+"\n")
+	file_lines.append("ct_target_dirty_ratio   ")
+	file_lines.append(data["ct_target_dirty_ratio"]+"\n")
+	file_lines.append("ct_target_full_ratio   ")
+	file_lines.append(data["ct_target_full_ratio"]+"\n")
+	file_lines.append("ct_target_min_flush_age_m   ")
+	file_lines.append(data["ct_target_min_flush_age_m"]+"\n")
+	file_lines.append("ct_target_min_evict_age_m   ")
+	file_lines.append(data["ct_target_min_evict_age_m"]+"\n")
+
+	# #write the files
+	write_file("cluster_cache",file_lines)
+	#response the data
+	rs = json.dumps({"status":0})
+	return HttpResponse(rs);
+
+def set_cluster_settings_file(request):
+	#get the data 
+	data = json.loads(request.body)
+	file_lines = []
+	file_lines.append("storage_group_near_full_threshold   ")
+	file_lines.append(data["storage_group_near_full_threshold"]+"\n")
+	file_lines.append("storage_group_full_threshold   ")
+	file_lines.append(data["storage_group_full_threshold"]+"\n")
+	file_lines.append("ceph_near_full_threshold   ")
+	file_lines.append(data["ceph_near_full_threshold"]+"\n")
+	file_lines.append("ceph_full_threshold   ")
+	file_lines.append(data["ceph_full_threshold"]+"\n")
+	file_lines.append("pg_count_factor   ")
+	file_lines.append(data["pg_count_factor"]+"\n")
+	file_lines.append("heartbeat_interval   ")
+	file_lines.append(data["heartbeat_interval"]+"\n")
+	file_lines.append("osd_heartbeat_interval   ")
+	file_lines.append(data["osd_heartbeat_interval"]+"\n")
+	file_lines.append("osd_heartbeat_grace   ")
+	file_lines.append(data["osd_heartbeat_grace"]+"\n")
+	file_lines.append("disk_near_full_threshold   ")
+	file_lines.append(data["disk_near_full_threshold"]+"\n")
+	file_lines.append("disk_full_threshold   ")
+	file_lines.append(data["disk_full_threshold"]+"\n")
+
+	# #write the files
+	write_file("cluster_settings",file_lines)
+	#response the data
+	rs = json.dumps({"status":0})
+	return HttpResponse(rs);
+
 def write_file(file_type,file_content):
 	base_dir = os.path.dirname(os.path.dirname(__file__))
 	file_path = "";
@@ -207,6 +387,12 @@ def write_file(file_type,file_content):
 		file_path = base_dir + "/files/cluster.basic.manifest"
 	if(file_type == "cluster_storage"):
 		file_path = base_dir + "/files/cluster.storage.manifest"
+	if(file_type == "cluster_profile"):
+		file_path = base_dir + "/files/cluster.profile.manifest"
+	if(file_type == "cluster_cache"):
+		file_path = base_dir + "/files/cluster.cache.manifest"
+	if(file_type == "cluster_settings"):
+		file_path = base_dir + "/files/cluster.settings.manifest"
 
 	fileHandler = open(file_path,"w")
 	fileHandler.writelines(file_content)
