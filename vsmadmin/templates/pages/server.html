@@ -1,55 +1,31 @@
-{{ ip }}
-
 
 <!--Basic-->
 <div id="divBasicForm" class="module-wrap">
   <span class="module-title">Server Manifest</span>
-  <button btn="btnSaveServerBasic" class="btn btn-success btn-right">Save</button>
+  <button btn="btnSaveServerBasic" class="btn btn-success btn-right" onclick="SaveServer()">Save</button>
   <hr>
    <form class="form-inline">
     <div class="form-group">
-      <label class="label-1" for="lblCluster">vsm controller ip</label>
-      <input id="lblCluster" type="textbox" class="form-control"/>
+      <label class="label-1" >vsm controller ip</label>
+      <input id="txtServerIP" type="textbox" class="form-control txt-server-ip" readOnly="true"/>
     </div>
     <div class="form-group">
-      <label class="label-1" for="lblCluster">auth key</label>
-      <input id="lblCluster" type="textbox" class="form-control"/>
+      <label class="label-1" >auth key</label>
+      <input id="txtAuthKey" type="textbox" class="form-control" readOnly="true" value=''/>
     </div>
     <br>
     <br>
     <div class="form-group">
       <label class="label-1" for="lblStorageClass">role</label>
-      <input id="lblStorageClass" type="textbox" class="form-control" />
-      <button btn="btnAddStorageClass" class="btn btn-primary">add</button>
-    </div>
-    <div id="divStorageClass" class="form-group">
-      <span class="label label-info">storage</span>
-      <span class="label label-info">monitor</span>
+      <select id="selRole" class="form-control" style="width:195px;">
+        <option value="storage">storage</option>
+        <option value="monitor">monitor</option>
+      </select>
     </div>
   </form>
 </div> 
 
-<!--SSD-->
-<div id="divSSDForm" class="module-wrap">
-  <span class="module-title">SSD</span>
-  <button btn="btnSaveSSD" class="btn btn-success btn-right">Save</button>
-  <hr>
-  <div class="option-bar">
-      <button class="btn btn-primary">Add Path</button>
-  </div>
-  <table id="tPath" class="table table-bordered">
-    <thead>
-      <tr>
-        <th>device path</th>
-        <th>journal path</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td colspan="2">
-          no data
-        </td>
-      </tr>
-    </tbody>
-  </table>
+
+<div class="module-wrap server-path-container">
+
 </div>

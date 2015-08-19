@@ -1,0 +1,26 @@
+[vsm_controller_ip]
+192.168.1.2
+
+[role]
+monitor
+
+[auth_key]
+token-tenant
+
+[10krpm_sas]
+path/device/10krpm_sas1   path/journal/10krpm_sas1
+path/device/10krpm_sas3   path/journal/10krpm_sas3
+path/device/10krpm_sas4   path/journal/10krpm_sas4
+112   12231
+
+
+[ssd]
+path/device/ssd1   path/journal/ssd1
+path/device/ssd3   path/journal/ssd3
+
+
+[7200_rpm_sata]
+path/device/7200_rpm_sata1   path/journal/7200_rpm_sata1
+path/device/7200_rpm_sata2   path/journal/7200_rpm_sata2
+
+

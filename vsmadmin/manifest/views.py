@@ -187,8 +187,6 @@ def read_cluster_cache_manifest():
 	for item in file_lines:
 		item = re.sub("(\s+)","|",item)
 		cache_items = re.split("(\|)",item)
-		#print item
-		print cache_items
 		if cache_items[0] == "ct_hit_set_count":
 			cluster_cache["ct_hit_set_count"] = cache_items[2]
 		if cache_items[0] == "ct_hit_set_period_s":
@@ -233,8 +231,6 @@ def read_cluster_settings_manifest():
 	for item in file_lines:
 		item = re.sub("(\s+)","|",item)
 		cache_items = re.split("(\|)",item)
-		#print item
-		print cache_items
 		if cache_items[0] == "storage_group_near_full_threshold":
 			cluster_cache["storage_group_near_full_threshold"] = cache_items[2]
 		if cache_items[0] == "storage_group_full_threshold":
@@ -257,6 +253,77 @@ def read_cluster_settings_manifest():
 			cluster_cache["heartbeat_interval"] = cache_items[2]
 
 	return cluster_cache
+
+def read_cluster_server_manifest(request):
+	#get the request data
+	print request.body
+	data = json.loads(request.body)
+	server_ip = data["server_ip"]
+
+	#read info. from file
+	base_dir = os.path.dirname(os.path.dirname(__file__))
+	manifest_path = base_dir + "/files/server."+server_ip+".manifest"
+	fileHandler = open(manifest_path,"a+")
+	file_lines = fileHandler.readlines()
+	#remove all the '\n' item
+	file_lines = filter(lambda a: a != '\n', file_lines)
+	file_lines = [item.replace('\n','') for item in file_lines]
+
+	storage_class_name_list = get_storage_class_name_list()
+	server_data_str = ""
+	server_data_str += "{'server_ip':'','role':'','auth_key':'',"
+	for storage_class_name in storage_class_name_list:
+	 	server_data_str += "'"+storage_class_name +"':[],"
+	server_data_str += "}"
+	server_data = eval(server_data_str)
+	print server_data
+	print server_data.keys()
+
+	item_flag = ""
+	is_item_path = False
+	for item in file_lines:
+		if item == "[vsm_controller_ip]":
+			item_flag = "vsm_controller_ip"
+			continue
+		if item == "[role]":
+			item_flag = "role"
+			continue
+		if item == "[auth_key]":
+			item_flag = "auth_key"
+			continue
+
+		is_flag = False
+		for _sg_name in storage_class_name_list:
+			_sg_name_mark  = "["+_sg_name+"]"
+			if item == _sg_name_mark:
+				item_flag = _sg_name
+				is_flag = True
+				is_item_path = True
+		if is_flag == True:
+			continue
+
+		#get the info.
+		if item_flag == "vsm_controller_ip":
+			server_data["server_ip"] = item
+		if item_flag == "role":
+			server_data["role"] = item
+		if item_flag == "auth_key":
+			server_data["auth_key"] = item
+		if is_item_path == True:
+			for sg_key in server_data.keys():
+				if  item_flag == sg_key:
+					item = re.sub("(\s+)","|",item)
+					path_items = re.split("(\|)",item)
+					path_data_dict = {"device_path":path_items[0],"journal_path":path_items[2]}
+					server_data[sg_key].append(path_data_dict)
+
+	rs = json.dumps(server_data)
+	return HttpResponse(rs);
+
+
+
+
+
 
 def set_cluster_basic_file(request):
 	#get the data
@@ -380,6 +447,58 @@ def set_cluster_settings_file(request):
 	rs = json.dumps({"status":0})
 	return HttpResponse(rs);
 
+def set_cluster_server_file(request):
+	#get the data
+	data = json.loads(request.body)
+	server_ip = data["server_ip"]
+	file_lines = [];
+	file_lines.append("[vsm_controller_ip]\n")
+	file_lines.append(data["server_ip"]+"\n\n")
+	file_lines.append("[role]\n")
+	file_lines.append(data["role"]+"\n\n")
+	file_lines.append("[auth_key]\n")
+	file_lines.append(data["auth_key"]+"\n\n")
+
+	for sg_item in data["path_data"]:
+		sg_name =  sg_item.keys()[0]
+		file_lines.append("["+sg_name+"]\n")
+		for path_item in sg_item[sg_name]:
+			file_lines.append(path_item["device_path"])
+			file_lines.append("   ")
+			file_lines.append(path_item["journal_path"]+"\n")
+		file_lines.append("\n\n")
+
+	#write the files
+	write_server_file(server_ip,file_lines)
+	#response the data
+	rs = json.dumps({"status":0})
+	return HttpResponse(rs);
+
+
+def get_storage_class_name_list():
+	base_dir = os.path.dirname(os.path.dirname(__file__))
+	manifest_path = base_dir + "/files/cluster.storage.manifest"
+	fileHandler = open(manifest_path,"a+")
+	file_lines = fileHandler.readlines()
+	#remove all the '\n' item
+	file_lines = filter(lambda a: a != '\n', file_lines)
+	file_lines = [item.replace('\n','') for item in file_lines]
+
+	storage_class = []
+	item_flag = ""
+	group_counter = 0
+	for item in file_lines:
+		#get the file_system mark
+		if item == "[storage_class]":
+			item_flag = "storage_class"
+			continue
+		if item == "[storage_group]":
+			break
+
+		if item_flag == "storage_class":
+			storage_class.append(item)
+	return storage_class
+
 def write_file(file_type,file_content):
 	base_dir = os.path.dirname(os.path.dirname(__file__))
 	file_path = "";
@@ -398,6 +517,15 @@ def write_file(file_type,file_content):
 	fileHandler.writelines(file_content)
 	fileHandler.close()
 
+
+def write_server_file(server_ip,file_content):
+	base_dir = os.path.dirname(os.path.dirname(__file__))
+	file_path = "";
+	file_path = base_dir + "/files/server."+server_ip+".manifest"
+
+	fileHandler = open(file_path,"w")
+	fileHandler.writelines(file_content)
+	fileHandler.close()
 
 
 

@@ -4,6 +4,7 @@
 
 {% block js %}
 	 <script src="{{ STATIC_URL }}js/cluster.manifest.js"></script>
+   <script src="{{ STATIC_URL }}js/server.manifest.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -22,8 +23,8 @@
     </a>
 	</li>
   {% for tab_node in config_data.nodes %}
-    <li>
-      <a href="#node_{{ forloop.counter0 }}" data-toggle="tab">{{tab_node}}</a>
+    <li class="tab-server">
+      <a id="link_node_{{ forloop.counter}}" href="#node_{{ forloop.counter}}" data-toggle="tab" onclick="SelecteTab({{ forloop.counter }})">{{tab_node}}</a>
     </li>
   {% endfor %}
 </ul>
@@ -34,7 +35,7 @@
   </div>
 
     {% for tab_node in config_data.nodes %}
-    <div id="node_{{ forloop.counter0 }}" class="tab-pane fade" >
+    <div id="node_{{ forloop.counter }}" class="tab-pane fade" >
         {% include "pages/server.html" %} 
     </div>
   {% endfor %}
@@ -43,3 +44,4 @@
 <div id="#modal_wrapper"></div>
 
 {% endblock %}
+

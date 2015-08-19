@@ -161,3 +161,8 @@ hr{
 .popover{
     width: 500px;
 }
+
+.table-server-path thead tr th{
+    text-align: center;
+    border-bottom:0px;
+}
