@@ -14,6 +14,11 @@ function InitData(){
 	}
 }
 
+function DownloadManifest(){
+	window.location.href = "/manifest/download_manifest_zip/";
+}
+
+
 var _CLUSTER_INFO = "";
 function SaveCluster(){
 	//Init the Cluster info.
@@ -43,8 +48,6 @@ function SaveCluster(){
 	SaveClusterModule("set_cluster_cache_file",cluster_cache_data);
 	SaveClusterModule("set_cluster_settings_file",cluster_settings_data);
 }
-
-
 
 //save the cluster basic info.
 function CheckClusterBasicInfo(){

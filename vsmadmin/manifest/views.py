@@ -6,6 +6,8 @@ import random
 import json
 import re
 import dashboard.views as dashboard_view
+import tempfile,zipfile
+from django.core.servers.basehttp import FileWrapper
 
 def index(request):
 	template = loader.get_template('manifest/index.html')
@@ -27,7 +29,6 @@ def index(request):
 	}
 	context = RequestContext(request, context_data)
 	return HttpResponse(template.render(context))
-
 
 def read_cluster_basic_manifest():
 	base_dir = os.path.dirname(os.path.dirname(__file__))
@@ -318,11 +319,6 @@ def read_cluster_server_manifest(request):
 	rs = json.dumps(server_data)
 	return HttpResponse(rs);
 
-
-
-
-
-
 def set_cluster_basic_file(request):
 	#get the data
 	data = json.loads(request.body)
@@ -472,7 +468,6 @@ def set_cluster_server_file(request):
 	rs = json.dumps({"status":0})
 	return HttpResponse(rs);
 
-
 def get_storage_class_name_list():
 	base_dir = os.path.dirname(os.path.dirname(__file__))
 	manifest_path = base_dir + "/files/cluster.storage.manifest"
@@ -515,7 +510,6 @@ def write_file(file_type,file_content):
 	fileHandler.writelines(file_content)
 	fileHandler.close()
 
-
 def write_server_file(server_ip,file_content):
 	base_dir = os.path.dirname(os.path.dirname(__file__))
 	file_path = "";
@@ -526,5 +520,37 @@ def write_server_file(server_ip,file_content):
 	fileHandler.close()
 
 
+#download the manifest
+def download_manifest_zip2(request):
+    base_dir = os.path.dirname(os.path.dirname(__file__))
+    #get the zip file as a temp file
+    download_file_path = base_dir + "\\files\\files.zip"
+    f =open(download_file_path)
+    data = f.read()
+    response = HttpResponse(data,content_type='application/octet-stream') 
+    response['Content-Disposition'] = 'attachment; filename=manifest.zip'
+    return response
 
+
+#download the manifest
+def download_manifest_zip(request):
+    base_dir = os.path.dirname(os.path.dirname(__file__))
+    #get the zip file as a temp file
+    download_file_path = base_dir + "\\files\\manifest.zip"
+    archive = zipfile.ZipFile(download_file_path, 'w', zipfile.ZIP_DEFLATED)
+    for index in range(2):
+        #file_path = base_dir + "\\files\\download%d.txt"%index
+        file_path = "download%d.txt"%index
+        archive.write(file_path,"hahahha")
+    archive.close()
+    print "========1234========"
+    f =open(download_file_path)
+    data = f.read()
+    response = HttpResponse(data, content_type='application/octet-stream')
+    response['Content-Disposition'] = 'attachment; filename=manifest.zip'
+    return response
+
+
+def download_manifest_file(request):
+	pass
 
