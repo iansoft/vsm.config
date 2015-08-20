@@ -13,28 +13,50 @@ def index(request):
     return HttpResponse(template.render(context))
 
 
-def set_config(request):
+def init_files(request):
 	data = json.loads(request.body)
-	#generate the config.manifest
-	file_lines = set_config_file(data)
-	#write the file
-	base_dir = os.path.dirname(os.path.dirname(__file__))
-	config_manifest_path = base_dir + "/files/config.manifest";
-	fileHandler = open(config_manifest_path,"w")
-	fileHandler.writelines(file_lines)
-	fileHandler.close()
-
+	#write the config file
+	set_config_file(data)
+	#write the server file
+	set_server_file(data)
+	
 	rs = json.dumps({"status":0})
 	return HttpResponse(rs);
 
 
 def set_config_file(data):
+	base_dir = os.path.dirname(os.path.dirname(__file__))
+	config_manifest_path = base_dir + "/files/config.manifest";
+	fileHandler = open(config_manifest_path,"w")
+
 	file_lines = [];
 	file_lines.append("[controller_address]\n")
 	file_lines.append(data["controller"]+"\n\n")
 	file_lines.append("[nodes]\n")
 	file_lines.extend([node+"\n" for node in data["nodes"] ])
-	return file_lines;
+	
+	fileHandler.writelines(file_lines)
+	fileHandler.close()
+
+
+def set_server_file(data):
+	server_list = data["nodes"]
+	for server in server_list:
+		base_dir = os.path.dirname(os.path.dirname(__file__))
+		config_manifest_path = base_dir + "/files/server."+server+".manifest";
+		fileHandler = open(config_manifest_path,"w+")
+
+		file_lines = [];
+		file_lines.append("[vsm_controller_ip]\n")
+		file_lines.append(server+"\n\n")
+		file_lines.append("[role]\n")
+		file_lines.extend("storage\n\n")
+		file_lines.append("[auth_key]\n")
+		file_lines.append("auth_key\n\n")
+
+		fileHandler.writelines(file_lines)
+		fileHandler.close()
+
 
 def read_config_file():
 	base_dir = os.path.dirname(os.path.dirname(__file__))

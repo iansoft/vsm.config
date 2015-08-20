@@ -2,8 +2,11 @@
 
 <!--Basic-->
 <div id="divBasicForm" class="module-wrap">
+     <!--Warning tip-->
+    <div id="divClusterMessage">
+    </div>
+
     <span class="module-title">Basic</span>
-    <a id="btnSaveClusterBasic" class="btn btn-success btn-right" onclick='SaveClusterBasic()'>Save</a>
     <hr>
     <!--Warning tip-->
     <div id="divBasicMessage">
@@ -26,21 +29,20 @@
       <br>
       <div class="form-group">
         <label class="label-1" for="lblManagementAddress">mgmt. subnet</label>
-        <input id="lblManagementAddress" type="textbox" class="form-control" value="{{cluster_basic_data.management_addr}}" placeholder="192.168.0.1/10" />
+        <input id="txtManagementAddress" type="textbox" class="form-control" value="{{cluster_basic_data.management_addr}}" placeholder="192.168.0.1/10" />
       </div>
       <div class="form-group">
         <label class="label-1" for="lblCephPublicAddress">public subnet</label>
-        <input id="lblCephPublicAddress"  type="textbox" class="form-control" value="{{cluster_basic_data.ceph_public_addr}}" placeholder="192.168.0.1/10" />
+        <input id="txtCephPublicAddress"  type="textbox" class="form-control" value="{{cluster_basic_data.ceph_public_addr}}" placeholder="192.168.0.1/10" />
       </div>
       <div class="form-group">
         <label class="label-1" for="lblCephClusterAddress">cluster subnet</label>
-        <input id="lblCephClusterAddress" type="textbox" class="form-control" value="{{cluster_basic_data.ceph_cluster_addr}}" placeholder="192.168.0.1/10" />
+        <input id="txtCephClusterAddress" type="textbox" class="form-control" value="{{cluster_basic_data.ceph_cluster_addr}}" placeholder="192.168.0.1/10" />
       </div>
 </div>
 <!--Storage-->
 <div id="divStorageForm" class="module-wrap">
     <span class="module-title">Storage Group</span>
-    <a btn="btnSaveStorage" class="btn btn-success btn-right" onclick="SaveClusterStorage()">Save</a>
     <hr>
      <!--message tip-->
     <div id="divStorageMessage">
@@ -92,7 +94,6 @@
 <!--Profiles-->
 <div id="divProfilesForm" class="module-wrap">
     <span class="module-title">EC_Profiles</span>
-    <a btn="btnSaveProfiles" class="btn btn-success btn-right" onclick='SaveClusterProfile()'>Save</a>
     <hr>
     <!--message tip-->
     <div id="divProfileMessage">
@@ -138,7 +139,6 @@
 <!--Cache-->
 <div id="divCacheForm" class="module-wrap">
     <span class="module-title">Cache Tiering</span>
-    <a btn="btnSaveCache" class="btn btn-success btn-right" onclick="SaveClusterCache()">Save</a>
     <hr>
      <!--message tip-->
     <div id="divCacheMessage">
@@ -186,7 +186,6 @@
 <!--Settings-->
 <div id="divSettingsForm" class="module-wrap">
     <span class="module-title">Settings</span>
-    <a btn="btnSaveSettings" class="btn btn-success btn-right" onclick="SaveClusterSettings()">Save</a>
     <hr>
       <!--message tip-->
       <div id="divSettingMessage">

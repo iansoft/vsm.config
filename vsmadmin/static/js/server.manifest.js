@@ -1,5 +1,7 @@
 $(document).ready(function(){
-
+	$("#btnSaveCluster").show();
+	$("#btnSaveServer").hide();
+	$("#btnGenerateManifest").show();
 });
 
 var _INDEX_TAB = "";
@@ -50,11 +52,11 @@ function SaveServer(){
         data: JSON.stringify(server_data),
         dataType:"json",
         success: function(data){
-        	console.log(data);
+        	ShowMessage($("#node_"+_INDEX_TAB).find("#divServerMessage"),2,"Save the server【"+server_data.server_ip+"】 successfully!");
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
            if(XMLHttpRequest.status == 500){
-           		
+           		ShowMessage($("#node_"+_INDEX_TAB).find("#divServerMessage"),0,"Save the server【"+server_data.server_ip+"】 failed!");
            }
         },
         headers: {
@@ -67,9 +69,17 @@ function SaveServer(){
 }
 
 
+function SelecteClusterTab(){
+	$("#btnSaveCluster").show();
+	$("#btnSaveServer").hide();
+}
 
 function SelecteTab(tabIndex){
+	$("#btnSaveCluster").hide();
+	$("#btnSaveServer").show();
+
 	_INDEX_TAB = tabIndex;
+	$("#node_"+_INDEX_TAB).find("#divServerMessage").empty();
 	var server_ip = $("#link_node_"+tabIndex)[0].innerHTML;
 
 	InitStorageGroup(tabIndex,server_ip);
@@ -119,8 +129,12 @@ function GenerateStorageGroupHTML (tabIndex,groupNameList,dataSource) {
 	for(var i=0;i<groupNameList.length;i++){
 		htmlStorageGroup += "<div>";
 		htmlStorageGroup += "	<span class='module-title'>"+groupNameList[i]+"</span>";
-		htmlStorageGroup += "	<a id='btn_"+groupNameList[i]+"_"+tabIndex+"' onclick='AddServerPath("+tabIndex+",\""+groupNameList[i]+"\")' class='btn btn-primary btn-right'>Add Path</a>";
 		htmlStorageGroup += "<hr>";
+
+		htmlStorageGroup += "<div class='option-bar'>";
+		htmlStorageGroup += "	<a id='btn_"+groupNameList[i]+"_"+tabIndex+"' onclick='AddServerPath("+tabIndex+",\""+groupNameList[i]+"\")' class='btn btn-primary btn-right'>Add Path</a>";
+		htmlStorageGroup += "</div>";
+
 		htmlStorageGroup += "	<table id='t_"+groupNameList[i]+"_"+tabIndex+"' class='table table-bordered table-server-path'>";
 		htmlStorageGroup += "		<thead>";
 		htmlStorageGroup += "			<tr >";

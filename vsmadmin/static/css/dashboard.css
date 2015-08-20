@@ -70,15 +70,17 @@ hr{
 .option-bar{
     text-align: right;
     margin:15px 0px 0px 0px;
+    overflow: hidden;
 }
 
 .btn-right{
-    margin-top: 20px;
+    /*margin-top: 20px;*/
     float: right;
 }
 
-#btnGenerateManifest{
+.btn-nav{
     margin-top: 8px;
+    margin-left: 20px;
 }
 
 

@@ -14,63 +14,121 @@ function InitData(){
 	}
 }
 
+var _CLUSTER_INFO = "";
+function SaveCluster(){
+	//Init the Cluster info.
+	_CLUSTER_INFO = "";
+	$("#divClusterMessage").empty();
+	//Check the cluster manifest data
+	var is_cluster_basic_pass = CheckClusterBasicInfo();
+	var is_cluster_cache_pass = CheckClusterCacheInfo();
+	var is_cluster_settings_pass = CheckCacheSettingInfo();
+
+	if(is_cluster_basic_pass == false || is_cluster_cache_pass == false || is_cluster_settings_pass == false){
+		ShowMessage($("#divClusterMessage"),1,_CLUSTER_INFO);
+		return false
+	}
+
+	//Generate the cluster manifest data
+	var cluster_basic_data = GenerateClusterBasicData();
+	var cluster_storage_group_data = GenerateClusterStorageGroupData();
+	var cluster_profile_data = GenerateClusterProfileData();
+	var cluster_cache_data = GenerateClusterCacheData();
+	var cluster_settings_data = GenerateClusterSettingsData();
+
+	//save the cluster module
+	SaveClusterModule("set_cluster_basic_file",cluster_basic_data);
+	SaveClusterModule("set_cluster_storage_file",cluster_storage_group_data);
+	SaveClusterModule("set_cluster_profile_file",cluster_profile_data);
+	SaveClusterModule("set_cluster_cache_file",cluster_cache_data);
+	SaveClusterModule("set_cluster_settings_file",cluster_settings_data);
+}
+
+
+
 //save the cluster basic info.
-function SaveClusterBasic(){
+function CheckClusterBasicInfo(){
+	var is_pass = true;
+	$("#lblManagementAddress").css("border","1px solid #ccc");
+	$("#lblCephPublicAddress").css("border","1px solid #ccc");
+	$("#lblCephClusterAddress").css("border","1px solid #ccc");
 	//check the management address
-	var _Management_Address = $("#lblManagementAddress").val();
-	if(checkIPWithPort(_Management_Address)==false){
-		ShowMessage($("#divBasicMessage"),1,"The management address format is wrong!");
-		return false;
+	if(checkIPWithPort($("#txtManagementAddress").val())==false){
+		$("#txtManagementAddress").css("border","1px solid red");
+		_CLUSTER_INFO += "The management address format is wrong!<br/>";
+		is_pass = false;
 	}
 
 	//check the ceph public address
-	var _Ceph_Public_Address = $("#lblCephPublicAddress").val();
-	if(checkIPWithPort(_Ceph_Public_Address)==false){
-		ShowMessage($("#divBasicMessage"),1,"The ceph public address format is wrong!");
-		return false;
+	if(checkIPWithPort($("#txtCephPublicAddress").val())==false){
+		$("#txtCephPublicAddress").css("border","1px solid red");
+		_CLUSTER_INFO += "The ceph public address format is wrong!<br/>";
+		is_pass = false;
 	}
 
 	//check the ceph cluster address
-	var _Ceph_Cluster_Address = $("#lblCephClusterAddress").val();
-	if(checkIPWithPort(_Ceph_Cluster_Address)==false){
-		ShowMessage($("#divBasicMessage"),1,"The ceph cluster address format is wrong!");
-		return false;
+	if(checkIPWithPort($("#txtCephClusterAddress").val())==false){
+		$("#txtCephClusterAddress").css("border","1px solid red");
+		_CLUSTER_INFO += "The ceph cluster address format is wrong!<br/>";
+		is_pass = false;
 	}
 
+	return is_pass;
+}
+
+function CheckClusterCacheInfo(){
+	var is_pass = true;
+	var txt_cache_list = $(".txt-cache");
+	for(var i=0;i<txt_cache_list.length;i++){
+		var ctrl = txt_cache_list[i];
+		if(ctrl.value == ""){
+			ctrl.style.border = "1px solid red";
+			is_pass = false
+		}
+		else{
+			ctrl.style.border = "1px solid #ccc";
+		}
+	}
+
+	if(is_pass == false){
+		_CLUSTER_INFO += "the cache items should not be empty!";
+	}
+	return is_pass;
+}
+
+function CheckCacheSettingInfo(){
+	var is_pass = true;
+	var txt_settings_list = $(".txt-settings");
+	for(var i=0;i<txt_settings_list.length;i++){
+		var ctrl = txt_settings_list[i];
+		if(ctrl.value == ""){
+			ctrl.style.border = "1px solid red";
+			is_pass = false
+		}
+		else{
+			ctrl.style.border = "1px solid #ccc";
+		}
+	}
+
+	if(is_pass == false){
+		_CLUSTER_INFO += "the settings items should not be empty!";
+	}
+	return is_pass;
+}
+
+function GenerateClusterBasicData(){
 	var cluster_basic_data = {
 		"cluster":$("#txtCluster").val(),
 		"file_system":$("#selFileSystem").val(),
-		"management_addr":_Management_Address,
-		"ceph_public_addr":_Ceph_Public_Address,
-		"ceph_cluster_addr":_Ceph_Cluster_Address,
+		"management_addr":$("#txtManagementAddress").val(),
+		"ceph_public_addr":$("#txtCephPublicAddress").val(),
+		"ceph_cluster_addr":$("#txtCephClusterAddress").val(),
 	};
 
-
-	var token = $("input[name=csrfmiddlewaretoken]").val();
-	$.ajax({
-        type: "post",
-        url: "/manifest/set_cluster_basic_file/",
-        data: JSON.stringify(cluster_basic_data),
-        dataType:"json",
-        success: function(data){
-        	ShowMessage($("#divBasicMessage"),2,"Save the cluster basic info. successfully!");
-        },
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-           if(XMLHttpRequest.status == 500){
-           		ShowMessage($("#divBasicMessage"),0,"INTERNAL SERVER ERROR!");
-           }
-        },
-        headers: {
-            "X-CSRFToken": token
-        },
-        complete: function(){
-
-        }
-    });
+	return cluster_basic_data;
 }
 
-//save the cluster storage info.
-function SaveClusterStorage(){
+function GenerateClusterStorageGroupData(){
 	var cluster_storage_data = {
 		storage_class:[],
 		storage_group:[]
@@ -92,31 +150,10 @@ function SaveClusterStorage(){
 		cluster_storage_data.storage_group.push(group_data);
 	});
 
-	var token = $("input[name=csrfmiddlewaretoken]").val();
-	$.ajax({
-        type: "post",
-        url: "/manifest/set_cluster_storage_file/",
-        data: JSON.stringify(cluster_storage_data),
-        dataType:"json",
-        success: function(data){
-        	ShowMessage($("#divStorageMessage"),2,"Save the cluster storage info. successfully!");
-        },
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-           if(XMLHttpRequest.status == 500){
-           		ShowMessage($("#divStorageMessage"),0,"INTERNAL SERVER ERROR!");
-           }
-        },
-        headers: {
-            "X-CSRFToken": token
-        },
-        complete: function(){
-
-        }
-    });
+	return cluster_storage_data;
 }
 
-//save the cluster profile info.
-function SaveClusterProfile(){
+function GenerateClusterProfileData(){
 	var cluster_profile_data = {
 		profiles:[]
 	};
@@ -137,49 +174,10 @@ function SaveClusterProfile(){
 		cluster_profile_data.profiles.push(profile_item);
 	});
 
-	var token = $("input[name=csrfmiddlewaretoken]").val();
-	$.ajax({
-        type: "post",
-        url: "/manifest/set_cluster_profile_file/",
-        data: JSON.stringify(cluster_profile_data),
-        dataType:"json",
-        success: function(data){
-        	ShowMessage($("#divProfileMessage"),2,"Save the cluster profile info. successfully!");
-        },
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-           if(XMLHttpRequest.status == 500){
-           		ShowMessage($("#divProfileMessage"),0,"INTERNAL SERVER ERROR!");
-           }
-        },
-        headers: {
-            "X-CSRFToken": token
-        },
-        complete: function(){
-
-        }
-    });
+	return cluster_profile_data;
 }
 
-function SaveClusterCache(){
-	var is_pass = true;
-	var txt_cache_list = $(".txt-cache");
-	for(var i=0;i<txt_cache_list.length;i++){
-		var ctrl = txt_cache_list[i];
-		if(ctrl.value == ""){
-			ctrl.style.border = "1px solid red";
-			is_pass = false
-		}
-		else{
-			ctrl.style.border = "1px solid #ccc";
-		}
-	}
-
-	$("#divCacheMessage").empty();
-	if(is_pass == false){
-		ShowMessage($("#divCacheMessage"),1,"the cache item should not be empty!");
-		return false;
-	}
-
+function GenerateClusterCacheData(){
 	var cluster_cache_data = {
 		"ct_hit_set_count":$("#txt_ct_hit_set_count").val(),
 		"ct_hit_set_period_s":$("#txt_ct_hit_set_period_s").val(),
@@ -191,49 +189,10 @@ function SaveClusterCache(){
 		"ct_target_min_evict_age_m":$("#txt_ct_target_min_evict_age_m").val(),
 	}
 
-	var token = $("input[name=csrfmiddlewaretoken]").val();
-	$.ajax({
-        type: "post",
-        url: "/manifest/set_cluster_cache_file/",
-        data: JSON.stringify(cluster_cache_data),
-        dataType:"json",
-        success: function(data){
-        	ShowMessage($("#divCacheMessage"),2,"Save the cluster cache info. successfully!");
-        },
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-           if(XMLHttpRequest.status == 500){
-           		ShowMessage($("#divCacheMessage"),0,"INTERNAL SERVER ERROR!");
-           }
-        },
-        headers: {
-            "X-CSRFToken": token
-        },
-        complete: function(){
+	return cluster_cache_data;
+}	
 
-        }
-    });
-}
-
-function SaveClusterSettings(){
-	var is_pass = true;
-	var txt_settings_list = $(".txt-settings");
-	for(var i=0;i<txt_settings_list.length;i++){
-		var ctrl = txt_settings_list[i];
-		if(ctrl.value == ""){
-			ctrl.style.border = "1px solid red";
-			is_pass = false
-		}
-		else{
-			ctrl.style.border = "1px solid #ccc";
-		}
-	}
-
-	$("#divSettingMessage").empty();
-	if(is_pass == false){
-		ShowMessage($("#divSettingMessage"),1,"the settings item should not be empty!");
-		return false;
-	}
-
+function GenerateClusterSettingsData(){
 	var cluster_settings_data = {
 		"storage_group_near_full_threshold":$("#txt_storage_group_near_full_threshold").val(),
 		"storage_group_full_threshold":$("#txt_storage_group_full_threshold").val(),
@@ -247,18 +206,23 @@ function SaveClusterSettings(){
 		"disk_full_threshold":$("#txt_disk_full_threshold").val(),
 	}
 
+	return cluster_settings_data;
+}	
+
+//save the cluster basic info.
+function SaveClusterModule(func_name,post_data){
 	var token = $("input[name=csrfmiddlewaretoken]").val();
 	$.ajax({
         type: "post",
-        url: "/manifest/set_cluster_settings_file/",
-        data: JSON.stringify(cluster_settings_data),
+        url: "/manifest/"+func_name+"/",
+        data: JSON.stringify(post_data),
         dataType:"json",
         success: function(data){
-        	ShowMessage($("#divSettingMessage"),2,"Save the cluster settings info. successfully!");
+        	ShowMessage($("#divClusterMessage"),2,"Save the cluster file successfully!");
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
            if(XMLHttpRequest.status == 500){
-           		ShowMessage($("#divSettingMessage"),0,"INTERNAL SERVER ERROR!");
+           		ShowMessage($("#divClusterMessage"),0,"Save the cluster file failed!");
            }
         },
         headers: {
@@ -269,6 +233,8 @@ function SaveClusterSettings(){
         }
     });
 }
+
+
 
 //add the storage class
 function AddStorageClass(){
@@ -353,7 +319,6 @@ function SaveStorageGroup(obj){
 	obj.parentNode.parentNode.remove();
 	$("#tStorageGroup>tbody").append(html);	
 }
-
 
 //remove the storage group
 function RemoveStorageGroup(obj){

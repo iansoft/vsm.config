@@ -276,9 +276,7 @@ def read_cluster_server_manifest(request):
 	 	server_data_str += "'"+storage_class_name +"':[],"
 	server_data_str += "}"
 	server_data = eval(server_data_str)
-	print server_data
-	print server_data.keys()
-
+	
 	item_flag = ""
 	is_item_path = False
 	for item in file_lines:

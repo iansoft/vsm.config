@@ -1,5 +1,5 @@
 [vsm_controller_ip]
-192.168.1.3
+192.168.1.5
 
 [role]
 storage
@@ -8,6 +8,7 @@ storage
 auth_key
 
 [10krpm_sas]
+xxx   vvvvvvvvvvvvv
 
 
 [ssd]

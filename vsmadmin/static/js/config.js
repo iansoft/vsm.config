@@ -35,6 +35,7 @@ function setConfiguration(){
 
     //set the datas
     config.controller = _Cluster_IP;
+    config.nodes.length = 0;
     $("#ulNodes>li>.node-ip").each(function(){
     	var _ip = this.innerHTML;
     	config.nodes.push(_ip);
@@ -45,7 +46,7 @@ function setConfiguration(){
 
     $.ajax({
         type: "post",
-        url: "/config/setconfig/",
+        url: "/config/init_files/",
         data: JSON.stringify(config),
         dataType:"json",
         success: function(data){
