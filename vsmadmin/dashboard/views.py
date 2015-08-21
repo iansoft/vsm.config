@@ -40,22 +40,22 @@ def set_config_file(data):
 
 
 def set_server_file(data):
+	base_dir = os.path.dirname(os.path.dirname(__file__))
 	server_list = data["nodes"]
 	for server in server_list:
-		base_dir = os.path.dirname(os.path.dirname(__file__))
 		config_manifest_path = base_dir + "/files/server."+server+".manifest";
-		fileHandler = open(config_manifest_path,"w+")
+		if os.path.exists(config_manifest_path) == False:
+			fileHandler = open(config_manifest_path,"w+")
+			file_lines = [];
+			file_lines.append("[vsm_controller_ip]\n")
+			file_lines.append(server+"\n\n")
+			file_lines.append("[role]\n")
+			file_lines.extend("storage\n\n")
+			file_lines.append("[auth_key]\n")
+			file_lines.append("auth_key\n\n")
 
-		file_lines = [];
-		file_lines.append("[vsm_controller_ip]\n")
-		file_lines.append(server+"\n\n")
-		file_lines.append("[role]\n")
-		file_lines.extend("storage\n\n")
-		file_lines.append("[auth_key]\n")
-		file_lines.append("auth_key\n\n")
-
-		fileHandler.writelines(file_lines)
-		fileHandler.close()
+			fileHandler.writelines(file_lines)
+			fileHandler.close()
 
 
 def read_config_file():
