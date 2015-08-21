@@ -24,7 +24,7 @@
 	</li>
   {% for tab_node in config_data.nodes %}
     <li class="tab-server">
-      <a id="link_node_{{ forloop.counter}}" href="#node_{{ forloop.counter}}" data-toggle="tab" onclick="SelecteTab({{ forloop.counter }})">{{tab_node}}</a>
+      <a id="link_node_{{ forloop.counter}}" href="#node_{{ forloop.counter}}" data-toggle="tab" class='server-link' onclick="SelecteTab({{ forloop.counter }})">{{tab_node}}</a>
     </li>
   {% endfor %}
 </ul>

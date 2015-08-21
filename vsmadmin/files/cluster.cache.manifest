@@ -1,3 +1,4 @@
+[Cache]
 ct_hit_set_count   1
 ct_hit_set_period_s   3600
 ct_target_max_objects   1000000

@@ -387,6 +387,7 @@ def set_cluster_cache_file(request):
 	#get the data 
 	data = json.loads(request.body)
 	file_lines = []
+	file_lines.append("[Cache]\n")
 	file_lines.append("ct_hit_set_count   ")
 	file_lines.append(data["ct_hit_set_count"]+"\n")
 	file_lines.append("ct_hit_set_period_s   ")
@@ -414,6 +415,7 @@ def set_cluster_settings_file(request):
 	#get the data 
 	data = json.loads(request.body)
 	file_lines = []
+	file_lines.append("[Settings]\n")
 	file_lines.append("storage_group_near_full_threshold   ")
 	file_lines.append(data["storage_group_near_full_threshold"]+"\n")
 	file_lines.append("storage_group_full_threshold   ")
@@ -492,6 +494,33 @@ def get_storage_class_name_list():
 			storage_class.append(item)
 	return storage_class
 
+def get_server_ip_list():
+	base_dir = os.path.dirname(os.path.dirname(__file__))
+	config_path = base_dir + "/files/config.manifest"
+
+	fileHandler = open(config_path,"a+")
+	file_lines = fileHandler.readlines()
+	#remove all the '\n' item
+	file_lines = filter(lambda a: a != '\n', file_lines)
+	file_lines = [item.replace('\n','') for item in file_lines]
+
+	print file_lines
+
+	server_ip_list = []
+	item_flag = ""
+	group_counter = 0
+	for item in file_lines:
+		#get the file_system mark
+		if item == "[nodes]":
+			item_flag = "nodes"
+			continue
+		if item == "[controller_address]":
+			continue
+
+		if item_flag == "nodes":
+			server_ip_list.append(item)
+	return server_ip_list
+
 def write_file(file_type,file_content):
 	base_dir = os.path.dirname(os.path.dirname(__file__))
 	file_path = "";
@@ -505,6 +534,8 @@ def write_file(file_type,file_content):
 		file_path = base_dir + "/files/cluster.cache.manifest"
 	if(file_type == "cluster_settings"):
 		file_path = base_dir + "/files/cluster.settings.manifest"
+	if(file_type == "cluster"):
+		file_path = base_dir + "/files/cluster.manifest"
 
 	fileHandler = open(file_path,"w")
 	fileHandler.writelines(file_content)
@@ -520,35 +551,72 @@ def write_server_file(server_ip,file_content):
 	fileHandler.close()
 
 
-#download the manifest
-def download_manifest_zip2(request):
-    base_dir = os.path.dirname(os.path.dirname(__file__))
-    #get the zip file as a temp file
-    download_file_path = base_dir + "\\files\\files.zip"
-    f =open(download_file_path)
-    data = f.read()
-    response = HttpResponse(data,content_type='application/octet-stream') 
-    response['Content-Disposition'] = 'attachment; filename=manifest.zip'
-    return response
-
-
-#download the manifest
+#generate the manifest
 def download_manifest_zip(request):
     base_dir = os.path.dirname(os.path.dirname(__file__))
-    #get the zip file as a temp file
+
+    #generate the cluster manifest file
+    manifest_file_content = generate_cluster_manifest_file()
+    write_file("cluster",manifest_file_content)
+
+    #get the zip package files
+    cluster_manifest_path = base_dir + "/files/cluster.manifest"
+    server_ip_list = get_server_ip_list();
+
+    zip_file_path_list = [cluster_manifest_path]
+    for server_ip  in server_ip_list:
+        server_manifeset_path = base_dir + "/files/server."+server_ip+".manifest"
+        zip_file_path_list.append(server_manifeset_path)
+
+    #package as a zip
     download_file_path = base_dir + "\\files\\manifest.zip"
     archive = zipfile.ZipFile(download_file_path, 'w', zipfile.ZIP_DEFLATED)
-    for index in range(2):
-        #file_path = base_dir + "\\files\\download%d.txt"%index
-        file_path = "download%d.txt"%index
-        archive.write(file_path,"hahahha")
+    for zip_file_path in zip_file_path_list:
+        archive.write(zip_file_path)
     archive.close()
-    print "========1234========"
-    f =open(download_file_path)
-    data = f.read()
-    response = HttpResponse(data, content_type='application/octet-stream')
+
+    print "new method"
+    def read_file_for_downlod(file_path,buf_size=262144):
+        f = open(file_path,"rb")
+        while True:
+            c = f.read(buf_size)
+            if c:
+                yield c
+            else:
+                break
+        f.close()
+
+    response = HttpResponse(read_file_for_downlod(download_file_path),content_type='application/octet-stream')
     response['Content-Disposition'] = 'attachment; filename=manifest.zip'
     return response
+
+
+def generate_cluster_manifest_file():
+	base_dir = os.path.dirname(os.path.dirname(__file__))
+
+	cluster_basic_manifest_path = base_dir + "/files/cluster.basic.manifest";
+	cluster_storage_manifest_path = base_dir + "/files/cluster.storage.manifest";
+	cluster_profile_manifest_path = base_dir + "/files/cluster.profile.manifest";
+	cluster_cache_manifest_path = base_dir + "/files/cluster.cache.manifest";
+	cluster_settings_manifest_path = base_dir + "/files/cluster.settings.manifest";
+
+	cluster_module_manifest_list = [
+		cluster_basic_manifest_path,
+		cluster_storage_manifest_path,
+		cluster_profile_manifest_path,
+		cluster_cache_manifest_path,
+		cluster_settings_manifest_path,
+	]
+
+	cluster_manifest_lines = []
+	for path in cluster_module_manifest_list:
+		fileHandler = open(path,"r")
+		file_lines = fileHandler.readlines()
+		cluster_manifest_lines.extend(file_lines)
+		cluster_manifest_lines.append("\n\n")
+
+	return cluster_manifest_lines
+
 
 
 def download_manifest_file(request):
