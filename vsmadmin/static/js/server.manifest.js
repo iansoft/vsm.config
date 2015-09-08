@@ -2,6 +2,7 @@ $(document).ready(function(){
 	$("#btnSaveCluster").show();
 	$("#btnSaveServer").hide();
 	$("#btnGenerateManifest").show();
+	$("#btnInstaller").show();
 });
 
 var _INDEX_TAB = "";
@@ -89,7 +90,7 @@ function InitStorageGroup(tabIndex,server_ip){
 	var token = $("input[name=csrfmiddlewaretoken]").val();
 	$.ajax({
         type: "post",
-        url: "/manifest/read_cluster_server_manifest/",
+        url: "/manifest/read_server_manifest/",
         data: JSON.stringify({"server_ip":server_ip}),
         dataType:"json",
         success: function(data){

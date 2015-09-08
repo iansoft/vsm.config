@@ -1,5 +1,6 @@
 from django.http import HttpResponse,JsonResponse, HttpResponseNotFound
 from django.template import RequestContext, loader
+from django.conf import settings
 import datetime
 import os
 import random
@@ -25,8 +26,7 @@ def init_files(request):
 
 
 def set_config_file(data):
-	base_dir = os.path.dirname(os.path.dirname(__file__))
-	config_manifest_path = base_dir + "/files/config.manifest";
+	config_manifest_path = settings.RESOURCE_DIR + "config.manifest";
 	fileHandler = open(config_manifest_path,"w")
 
 	file_lines = [];
@@ -40,12 +40,16 @@ def set_config_file(data):
 
 
 def set_server_file(data):
-	base_dir = os.path.dirname(os.path.dirname(__file__))
 	server_list = data["nodes"]
 	for server in server_list:
-		config_manifest_path = base_dir + "/files/server."+server+".manifest";
-		if os.path.exists(config_manifest_path) == False:
-			fileHandler = open(config_manifest_path,"w+")
+		server_manifest_folder_path = settings.RESOURCE_DIR + server
+		server_manifest_file_path = settings.RESOURCE_DIR + server + "/server.manifest"
+
+		if not os.path.exists(server_manifest_folder_path):
+			os.makedirs(server_manifest_folder_path)
+
+		if not os.path.exists(server_manifest_file_path):
+			fileHandler = open(server_manifest_file_path,"w+")
 			file_lines = [];
 			file_lines.append("[vsm_controller_ip]\n")
 			file_lines.append(server+"\n\n")
@@ -59,8 +63,8 @@ def set_server_file(data):
 
 
 def read_config_file():
-	base_dir = os.path.dirname(os.path.dirname(__file__))
-	config_manifest_path = base_dir + "/files/config.manifest"
+	config_manifest_path = settings.RESOURCE_DIR + "config.manifest"
+	print config_manifest_path
 	fileHandler = open(config_manifest_path,"a+")
 	file_lines = fileHandler.readlines()
 	#remove all the '\n' item

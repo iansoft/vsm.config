@@ -18,6 +18,9 @@ function DownloadManifest(){
 	window.location.href = "/manifest/download_manifest_zip/";
 }
 
+function GotoInstaller(){
+	window.location.href = "/installer/";
+}
 
 var _CLUSTER_INFO = "";
 function SaveCluster(){
@@ -236,7 +239,6 @@ function SaveClusterModule(func_name,post_data){
         }
     });
 }
-
 
 
 //add the storage class
