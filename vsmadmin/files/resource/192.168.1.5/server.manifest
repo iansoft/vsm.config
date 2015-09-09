@@ -7,3 +7,15 @@ storage
 [auth_key]
 auth_key
 
+[123]
+
+
+[10krpm_sas]
+
+
+[ssd]
+
+
+[7200_rpm_sata]
+
+

@@ -38,18 +38,45 @@ function SaveCluster(){
 	}
 
 	//Generate the cluster manifest data
-	var cluster_basic_data = GenerateClusterBasicData();
-	var cluster_storage_group_data = GenerateClusterStorageGroupData();
-	var cluster_profile_data = GenerateClusterProfileData();
-	var cluster_cache_data = GenerateClusterCacheData();
-	var cluster_settings_data = GenerateClusterSettingsData();
+	var cluster_manifest_data = {
+		"basic":"",
+		"group":"",
+		"profile":"",
+		"cache":"",
+		"settings":"",
+	}
 
-	//save the cluster module
-	SaveClusterModule("set_cluster_basic_file",cluster_basic_data);
-	SaveClusterModule("set_cluster_storage_file",cluster_storage_group_data);
-	SaveClusterModule("set_cluster_profile_file",cluster_profile_data);
-	SaveClusterModule("set_cluster_cache_file",cluster_cache_data);
-	SaveClusterModule("set_cluster_settings_file",cluster_settings_data);
+	//Generate the cluster manifest data
+	cluster_manifest_data.basic = GenerateClusterBasicData();
+	cluster_manifest_data.group =  GenerateClusterStorageGroupData();
+	cluster_manifest_data.profile =  GenerateClusterProfileData();
+	cluster_manifest_data.cache = GenerateClusterCacheData();
+	cluster_manifest_data.settings = GenerateClusterSettingsData();
+
+	console.log(cluster_manifest_data);
+
+	var token = $("input[name=csrfmiddlewaretoken]").val();
+	$.ajax({
+		type: "post",
+		url: "/manifest/save_cluster_manifest/",
+		data: JSON.stringify(cluster_manifest_data),
+		dataType:"json",
+		success: function(data){
+			ShowMessage($("#divClusterMessage"),2,"Save the cluster file successfully!");
+		},
+		error: function (XMLHttpRequest, textStatus, errorThrown) {
+		   if(XMLHttpRequest.status == 500){
+		   		ShowMessage($("#divClusterMessage"),0,"Save the cluster file failed!");
+		   }
+		},
+		headers: {
+		    "X-CSRFToken": token
+		},
+		complete: function(){
+
+		}
+	});
+
 }
 
 //save the cluster basic info.
@@ -214,31 +241,6 @@ function GenerateClusterSettingsData(){
 
 	return cluster_settings_data;
 }	
-
-//save the cluster basic info.
-function SaveClusterModule(func_name,post_data){
-	var token = $("input[name=csrfmiddlewaretoken]").val();
-	$.ajax({
-        type: "post",
-        url: "/manifest/"+func_name+"/",
-        data: JSON.stringify(post_data),
-        dataType:"json",
-        success: function(data){
-        	ShowMessage($("#divClusterMessage"),2,"Save the cluster file successfully!");
-        },
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-           if(XMLHttpRequest.status == 500){
-           		ShowMessage($("#divClusterMessage"),0,"Save the cluster file failed!");
-           }
-        },
-        headers: {
-            "X-CSRFToken": token
-        },
-        complete: function(){
-
-        }
-    });
-}
 
 
 //add the storage class

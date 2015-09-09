@@ -49,7 +49,7 @@ function SaveServer(){
 	var token = $("input[name=csrfmiddlewaretoken]").val();
 	$.ajax({
         type: "post",
-        url: "/manifest/set_cluster_server_file/",
+        url: "/manifest/save_server_manifest/",
         data: JSON.stringify(server_data),
         dataType:"json",
         success: function(data){
@@ -101,7 +101,6 @@ function InitStorageGroup(tabIndex,server_ip){
         		}
         		_GROUP_NAME_LIST.push(key);
 			}
-
 			//get the basic info.
 			$("#node_"+tabIndex).find("#txtServerIP").val(data.server_ip);
 			$("#node_"+tabIndex).find("#txtAuthKey").val(data.auth_key);

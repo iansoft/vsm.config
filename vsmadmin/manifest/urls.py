@@ -1,16 +1,13 @@
 from django.conf.urls import patterns,include,url
 from manifest import views
-from .views import set_cluster_basic_file,set_cluster_storage_file,set_cluster_profile_file,set_cluster_cache_file,set_cluster_settings_file
-from .views import read_server_manifest,set_cluster_server_file
+from .views import read_server_manifest
+from .views import save_cluster_manifest
+from .views import save_server_manifest
 from .views import download_manifest_zip
 urlpatterns = patterns('',
                        url(r"^$", views.index, name="manifest"),
-                       url(r"^set_cluster_basic_file/$", set_cluster_basic_file, name="set_cluster_basic_file"),
-                       url(r"^set_cluster_storage_file/$", set_cluster_storage_file, name="set_cluster_storage_file"),
-                       url(r"^set_cluster_profile_file/$", set_cluster_profile_file, name="set_cluster_profile_file"),
-                       url(r"^set_cluster_cache_file/$", set_cluster_cache_file, name="set_cluster_cache_file"),
-                       url(r"^set_cluster_settings_file/$", set_cluster_settings_file, name="set_cluster_settings_file"),
                        url(r"^read_server_manifest/$", read_server_manifest, name="read_server_manifest"),
-                       url(r"^set_cluster_server_file/$", set_cluster_server_file, name="set_cluster_server_file"),
+                       url(r"^save_cluster_manifest/$", save_cluster_manifest, name="save_cluster_manifest"),
+                       url(r"^save_server_manifest/$", save_server_manifest, name="save_server_manifest"),
                        url(r"^download_manifest_zip/$", download_manifest_zip, name="download_manifest_zip"),
                     )

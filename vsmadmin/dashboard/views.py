@@ -5,12 +5,13 @@ import datetime
 import os
 import random
 import json
+import api.handlerfile as HandlerFile
 
 def index(request):
     template = loader.get_template('dashboard/index.html')
     #read the config file
-    config_data = read_config_file()
-    context = RequestContext(request, {"config_data": config_data})
+    config_data = HandlerFile.read_conf_manifest()
+    context = RequestContext(request, config_data)
     return HttpResponse(template.render(context))
 
 
@@ -64,7 +65,6 @@ def set_server_file(data):
 
 def read_config_file():
 	config_manifest_path = settings.RESOURCE_DIR + "config.manifest"
-	print config_manifest_path
 	fileHandler = open(config_manifest_path,"a+")
 	file_lines = fileHandler.readlines()
 	#remove all the '\n' item

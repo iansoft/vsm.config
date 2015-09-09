@@ -5,15 +5,17 @@ import datetime
 import os
 import random
 import json
-
-import dashboard.views as dashboard_view
 import tempfile,zipfile
 from django.core.servers.basehttp import FileWrapper
 import api.handlerfile as HandlerFile
 
+#read the the cluster manifest
 def index(request):
 	template = loader.get_template('manifest/index.html')
-	context_data = HandlerFile.read_cluster_manifest()
+	#read the cluster manifest content
+	context_data = {"conf":"","cluster":""}
+	context_data["conf"] = HandlerFile.read_conf_manifest()
+	context_data["cluster"] = HandlerFile.read_cluster_manifest()
 	context = RequestContext(request, context_data)
 	return HttpResponse(template.render(context))
 
@@ -24,95 +26,33 @@ def read_server_manifest(request):
 	rs = json.dumps(server_manifest_data)
 	return HttpResponse(rs);
 
-def set_cluster_manifest(request):
+def save_cluster_manifest(request):
 	#get the data
 	datasource = json.loads(request.body)
-	cluster_basic_content = HandlerFile.generate_cluster_basic_content(datasource);
-	print cluster_basic_content
-	#write the files
-	HandlerFile.write_file("cluster_basic",cluster_basic_content)
-	#response the data
+	cluster_manifest_path = settings.RESOURCE_DIR + "cluster.manifest"
+	cluster_manifest_content = HandlerFile.generate_cluster_manifest(datasource);
+	#write the cluster manifest in the file
+	HandlerFile.write_file(cluster_manifest_path,cluster_manifest_content)
 	rs = json.dumps({"status":0})
 	return HttpResponse(rs);
 
-def set_cluster_storage_file(request):
+def save_server_manifest(request):
 	#get the data
-	data = json.loads(request.body)
-	
-	
-	#write the files
-	handlerfile.write_file("cluster_storage",file_lines)
-	#response the data
+	datasource = json.loads(request.body)
+	server_ip = datasource["server_ip"] 
+	server_manifest_path = settings.RESOURCE_DIR + server_ip +"/server.manifest"
+	server_manifest_content = HandlerFile.generate_server_manifest(datasource);
+	#write the cluster manifest in the file
+	HandlerFile.write_file(server_manifest_path,server_manifest_content)
 	rs = json.dumps({"status":0})
 	return HttpResponse(rs);
-
-def set_cluster_profile_file(request):
-	#get the data 
-	data = json.loads(request.body)
-	
-
-	#write the files
-	handlefile.write_file("cluster_profile",file_lines)
-	#response the data
-	rs = json.dumps({"status":0})
-	return HttpResponse(rs);
-
-def set_cluster_cache_file(request):
-	#get the data 
-	data = json.loads(request.body)
-	
-
-	# #write the files
-	handlefile.write_file("cluster_cache",file_lines)
-	#response the data
-	rs = json.dumps({"status":0})
-	return HttpResponse(rs);
-
-def set_cluster_settings_file(request):
-	#get the data 
-	data = json.loads(request.body)
-	
-
-	# #write the files
-	handlefile.write_file("cluster_settings",file_lines)
-	#response the data
-	rs = json.dumps({"status":0})
-	return HttpResponse(rs);
-
-def set_cluster_server_file(request):
-	#get the data
-	data = json.loads(request.body)
-	server_ip = data["server_ip"]
-	
-
-	#write the files
-	write_server_file(server_ip,file_lines)
-	#response the data
-	rs = json.dumps({"status":0})
-	return HttpResponse(rs);
-
-
-
-
-
-
-
-def write_server_file(server_ip,file_content):
-	file_path = settings.RESOURCE_DIR + server_ip +"/server.manifest"
-	fileHandler = open(file_path,"w")
-	fileHandler.writelines(file_content)
-	fileHandler.close()
 
 
 #generate the manifest
 def download_manifest_zip(request):
-    #generate the cluster manifest file
-    manifest_file_content = generate_cluster_manifest_content()
-    write_file("cluster",manifest_file_content)
-
-    #get the zip package files
+	#get the zip package files
     cluster_manifest_path = settings.RESOURCE_DIR +"/cluster.manifest"
-    server_ip_list = get_server_ip_list();
+    server_ip_list = HandlerFile.get_server_ip_list();
 
     zip_file_list = [{"type":"cluster","ip":"","path":cluster_manifest_path}]
     for server_ip  in server_ip_list:

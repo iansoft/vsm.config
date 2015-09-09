@@ -2,21 +2,7 @@ import re
 from django.conf import settings
 
 
-def write_file(file_type,file_content):
-	file_path = settings.RESOURCE_DIR + "/cluster.manifest.files/"
-	if(file_type == "cluster_basic"):
-		file_path = file_path + "basic.manifest"
-	if(file_type == "cluster_storage"):
-		file_path = file_path + "storage.manifest"
-	if(file_type == "cluster_profile"):
-		file_path = file_path + "profile.manifest"
-	if(file_type == "cluster_cache"):
-		file_path = file_path + "cache.manifest"
-	if(file_type == "cluster_settings"):
-		file_path = file_path + "settings.manifest"
-	if(file_type == "cluster"):
-		file_path = settings.RESOURCE_DIR + "cluster.manifest"
-
+def write_file(file_path,file_content):
 	fileHandler = open(file_path,"w")
 	fileHandler.writelines(file_content)
 	fileHandler.close()
@@ -69,6 +55,36 @@ def get_server_ip_list():
 	return server_ip_list
 
 #=====================READ THE MANIFEST=======================
+def read_conf_manifest():
+	config_manifest_path = settings.RESOURCE_DIR + "config.manifest"
+	fileHandler = open(config_manifest_path,"a+")
+	file_lines = fileHandler.readlines()
+	#remove all the '\n' item
+	file_lines = filter(lambda a: a != '\n', file_lines)
+	file_lines = [item.replace('\n','') for item in file_lines]
+
+	item_flag = ""
+	controller = ""
+	nodes = []
+	for item in file_lines:
+		#get the controller mark
+		if item == "[controller_address]":
+			item_flag = "controller"
+			continue
+		#get the node mark
+		if item == "[nodes]":
+			item_flag = "nodes"
+			continue
+		#get the controller IP
+		if item_flag == "controller":
+			controller = item
+		#get the node IP
+		if item_flag == "nodes":
+			nodes.append(item)
+
+	config_data = {"controller_address":controller,"nodes":nodes}
+	return config_data
+
 def read_cluster_manifest():
 	manifest_path = settings.RESOURCE_DIR + "cluster.manifest"
 	fileHandler = open(manifest_path,"a+")
@@ -181,6 +197,9 @@ def read_cluster_basic(file_lines):
 		if item == "[ceph_cluster_addr]":
 			item_flag = "ceph_cluster_addr"
 			continue
+		#get out the loop of basic
+		if item == "[storage_class]":
+			break
 
 		if item_flag == "cluster":
 			cluster_basic["cluster"] = item
@@ -212,6 +231,9 @@ def read_cluster_storage(file_lines):
 		if item == "[storage_group]":
 			item_flag = "storage_group"
 			continue
+		#get out the loop of cluster storage
+		if item == "[ec_profiles]":
+			break
 
 		if item_flag == "storage_class":
 			cluster_storage["storage_class"].append(item) 
@@ -240,6 +262,10 @@ def read_cluster_profile(file_lines):
 		if item == "[ec_profiles]":
 			item_flag = "ec_profiles"
 			continue
+		#get out the loop of cluster profile
+		if item == "[Cache]":
+			break
+
 		if item_flag == "ec_profiles":
 			group_counter = group_counter + 1
 			#ignore the comment line
@@ -270,25 +296,35 @@ def read_cluster_cache(file_lines):
 		"ct_target_min_evict_age_m":0
 	}
 
+	item_flag = ""
 	for item in file_lines:
-		item = re.sub("(\s+)","|",item)
-		cache_items = re.split("(\|)",item)
-		if cache_items[0] == "ct_hit_set_count":
-			cluster_cache["ct_hit_set_count"] = cache_items[2]
-		if cache_items[0] == "ct_hit_set_period_s":
-			cluster_cache["ct_hit_set_period_s"] = cache_items[2]
-		if cache_items[0] == "ct_target_max_objects":
-			cluster_cache["ct_target_max_objects"] = cache_items[2]
-		if cache_items[0] == "ct_target_max_mem_mb":
-			cluster_cache["ct_target_max_mem_mb"] = cache_items[2]
-		if cache_items[0] == "ct_target_dirty_ratio":
-			cluster_cache["ct_target_dirty_ratio"] = cache_items[2]
-		if cache_items[0] == "ct_target_full_ratio":
-			cluster_cache["ct_target_full_ratio"] = cache_items[2]
-		if cache_items[0] == "ct_target_min_flush_age_m":
-			cluster_cache["ct_target_min_flush_age_m"] = cache_items[2]
-		if cache_items[0] == "ct_target_min_evict_age_m":
-			cluster_cache["ct_target_min_evict_age_m"] = cache_items[2]
+		#get the cluster mark
+		if item == "[Cache]":
+			item_flag = "Cache"
+			continue
+		#get out the loop of cluster cache
+		if item == "[Settings]":
+			break
+
+		if item_flag == "Cache":
+			item = re.sub("(\s+)","|",item)
+			cache_items = re.split("(\|)",item)
+			if cache_items[0] == "ct_hit_set_count":
+				cluster_cache["ct_hit_set_count"] = cache_items[2]
+			if cache_items[0] == "ct_hit_set_period_s":
+				cluster_cache["ct_hit_set_period_s"] = cache_items[2]
+			if cache_items[0] == "ct_target_max_objects":
+				cluster_cache["ct_target_max_objects"] = cache_items[2]
+			if cache_items[0] == "ct_target_max_mem_mb":
+				cluster_cache["ct_target_max_mem_mb"] = cache_items[2]
+			if cache_items[0] == "ct_target_dirty_ratio":
+				cluster_cache["ct_target_dirty_ratio"] = cache_items[2]
+			if cache_items[0] == "ct_target_full_ratio":
+				cluster_cache["ct_target_full_ratio"] = cache_items[2]
+			if cache_items[0] == "ct_target_min_flush_age_m":
+				cluster_cache["ct_target_min_flush_age_m"] = cache_items[2]
+			if cache_items[0] == "ct_target_min_evict_age_m":
+				cluster_cache["ct_target_min_evict_age_m"] = cache_items[2]
 
 	return cluster_cache
 
@@ -306,60 +342,42 @@ def read_cluster_settings(file_lines):
 		"heartbeat_interval":0,
 	}
 
+	item_flag = ""
 	for item in file_lines:
-		item = re.sub("(\s+)","|",item)
-		cache_items = re.split("(\|)",item)
-		if cache_items[0] == "storage_group_near_full_threshold":
-			cluster_cache["storage_group_near_full_threshold"] = cache_items[2]
-		if cache_items[0] == "storage_group_full_threshold":
-			cluster_cache["storage_group_full_threshold"] = cache_items[2]
-		if cache_items[0] == "ceph_near_full_threshold":
-			cluster_cache["ceph_near_full_threshold"] = cache_items[2]
-		if cache_items[0] == "ceph_full_threshold":
-			cluster_cache["ceph_full_threshold"] = cache_items[2]
-		if cache_items[0] == "osd_heartbeat_interval":
-			cluster_cache["osd_heartbeat_interval"] = cache_items[2]
-		if cache_items[0] == "osd_heartbeat_grace":
-			cluster_cache["osd_heartbeat_grace"] = cache_items[2]
-		if cache_items[0] == "disk_near_full_threshold":
-			cluster_cache["disk_near_full_threshold"] = cache_items[2]
-		if cache_items[0] == "disk_full_threshold":
-			cluster_cache["disk_full_threshold"] = cache_items[2]
-		if cache_items[0] == "pg_count_factor":
-			cluster_cache["pg_count_factor"] = cache_items[2]
-		if cache_items[0] == "heartbeat_interval":
-			cluster_cache["heartbeat_interval"] = cache_items[2]
+		#get the cluster mark
+		if item == "[Settings]":
+			item_flag = "Settings"
+			continue
+
+		#get out the loop of cluster cache
+		if item_flag == "Settings":
+			item = re.sub("(\s+)","|",item)
+			cache_items = re.split("(\|)",item)
+			if cache_items[0] == "storage_group_near_full_threshold":
+				cluster_cache["storage_group_near_full_threshold"] = cache_items[2]
+			if cache_items[0] == "storage_group_full_threshold":
+				cluster_cache["storage_group_full_threshold"] = cache_items[2]
+			if cache_items[0] == "ceph_near_full_threshold":
+				cluster_cache["ceph_near_full_threshold"] = cache_items[2]
+			if cache_items[0] == "ceph_full_threshold":
+				cluster_cache["ceph_full_threshold"] = cache_items[2]
+			if cache_items[0] == "osd_heartbeat_interval":
+				cluster_cache["osd_heartbeat_interval"] = cache_items[2]
+			if cache_items[0] == "osd_heartbeat_grace":
+				cluster_cache["osd_heartbeat_grace"] = cache_items[2]
+			if cache_items[0] == "disk_near_full_threshold":
+				cluster_cache["disk_near_full_threshold"] = cache_items[2]
+			if cache_items[0] == "disk_full_threshold":
+				cluster_cache["disk_full_threshold"] = cache_items[2]
+			if cache_items[0] == "pg_count_factor":
+				cluster_cache["pg_count_factor"] = cache_items[2]
+			if cache_items[0] == "heartbeat_interval":
+				cluster_cache["heartbeat_interval"] = cache_items[2]
 
 	return cluster_cache
 
 
-
-
 #=====================SET THE MANIFEST======================== 
-def generate_cluster_manifest():
-	cluster_basic_manifest_path = settings.RESOURCE_DIR + "/cluster.manifest.files/basic.manifest";
-	cluster_storage_manifest_path = settings.RESOURCE_DIR + "/cluster.manifest.files/storage.manifest";
-	cluster_profile_manifest_path = settings.RESOURCE_DIR + "/cluster.manifest.files/profile.manifest";
-	cluster_cache_manifest_path = settings.RESOURCE_DIR + "/cluster.manifest.files/cache.manifest";
-	cluster_settings_manifest_path = settings.RESOURCE_DIR + "/cluster.manifest.files/settings.manifest";
-
-	cluster_module_manifest_list = [
-		cluster_basic_manifest_path,
-		cluster_storage_manifest_path,
-		cluster_profile_manifest_path,
-		cluster_cache_manifest_path,
-		cluster_settings_manifest_path,
-	]
-
-	cluster_manifest_lines = []
-	for path in cluster_module_manifest_list:
-		fileHandler = open(path,"r")
-		file_lines = fileHandler.readlines()
-		cluster_manifest_lines.extend(file_lines)
-		cluster_manifest_lines.append("\n\n")
-
-	return cluster_manifest_lines
-
 def generate_server_manifest(datasource):
 	file_lines = [];
 	file_lines.append("[vsm_controller_ip]\n")
@@ -378,92 +396,94 @@ def generate_server_manifest(datasource):
 		file_lines.append("\n\n")
 	return file_lines
 
-def generate_cluster_basic_content(datasource):
-	file_lines = [];
-	file_lines.append("[cluster]\n")
-	file_lines.append(datasource["cluster"]+"\n\n")
-	file_lines.append("[file_system]\n")
-	file_lines.append(datasource["file_system"]+"\n\n")
-	file_lines.append("[management_addr]\n")
-	file_lines.append(datasource["management_addr"]+"\n\n")
-	file_lines.append("[ceph_public_addr]\n")
-	file_lines.append(datasource["ceph_public_addr"]+"\n\n")
-	file_lines.append("[ceph_cluster_addr]\n")
-	file_lines.append(datasource["ceph_cluster_addr"]+"\n\n")
-	return file_lines
+def generate_cluster_manifest(datasource):
+	#the document lines of manifest
+	file_lines = []
 
-def generate_cluster_storage_content(datasource):
-	file_lines = [];
+	#get the basic datasource
+	basic = datasource["basic"]
+	file_lines.append("[cluster]\n")
+	file_lines.append(basic["cluster"]+"\n\n")
+	file_lines.append("[file_system]\n")
+	file_lines.append(basic["file_system"]+"\n\n")
+	file_lines.append("[management_addr]\n")
+	file_lines.append(basic["management_addr"]+"\n\n")
+	file_lines.append("[ceph_public_addr]\n")
+	file_lines.append(basic["ceph_public_addr"]+"\n\n")
+	file_lines.append("[ceph_cluster_addr]\n")
+	file_lines.append(basic["ceph_cluster_addr"]+"\n\n")
+
+	#get the group datasource
+	storage = datasource["group"]
 	file_lines.append("[storage_class]\n")
-	for storage_class in datasource["storage_class"]:
+	for storage_class in storage["storage_class"]:
 		file_lines.append(storage_class+"\n")
 	file_lines.append("\n");
 	file_lines.append("[storage_group]\n")
 	file_lines.append("#[group_name]   [friendly_name]   [storage_class]\n")
-	for storage_group  in datasource["storage_group"]:
+	for storage_group  in storage["storage_group"]:
 		file_lines.append(storage_group["group_name"]+"   ")
 		file_lines.append(storage_group["friendly_name"]+"   ")
 		file_lines.append(storage_group["storage_class"]+"   ")
 		file_lines.append("\n")
-	return file_lines
 
-def generate_cluster_profile_content(datasource):
-	file_lines = [];
-	file_lines.append("[ec_profiles]\n")
+	#get the profile datasource
+	profile = datasource["profile"]
+	file_lines.append("\n\n[ec_profiles]\n")
 	file_lines.append("#[profile-name] [path-to-plugin] [plugin-name] [pg_num value] [json format key/value]\n")
-	for profile in datasource["profiles"]:
-		file_lines.append(profile["profile_name"]+"   ")
-		file_lines.append(profile["pg_number"]+"   ")
-		file_lines.append(profile["plugin_name"]+"   ")
-		file_lines.append(profile["plugin_path"]+"   ")
-		file_lines.append(profile["profile_data"]+"   ")
+	for item in profile["profiles"]:
+		file_lines.append(item["profile_name"]+"   ")
+		file_lines.append(item["pg_number"]+"   ")
+		file_lines.append(item["plugin_name"]+"   ")
+		file_lines.append(item["plugin_path"]+"   ")
+		file_lines.append(item["profile_data"]+"   ")
 		file_lines.append("\n")
-	return file_lines
 
-def generate_cluster_cache_content(datasource):
-	file_lines = []
-	file_lines.append("[Cache]\n")
+	#get the cache datasource
+	cache = datasource["cache"]
+	file_lines.append("\n\n[Cache]\n")
 	file_lines.append("ct_hit_set_count   ")
-	file_lines.append(datasource["ct_hit_set_count"]+"\n")
+	file_lines.append(cache["ct_hit_set_count"]+"\n")
 	file_lines.append("ct_hit_set_period_s   ")
-	file_lines.append(datasource["ct_hit_set_period_s"]+"\n")
+	file_lines.append(cache["ct_hit_set_period_s"]+"\n")
 	file_lines.append("ct_target_max_objects   ")
-	file_lines.append(datasource["ct_target_max_objects"]+"\n")
+	file_lines.append(cache["ct_target_max_objects"]+"\n")
 	file_lines.append("ct_target_max_mem_mb   ")
-	file_lines.append(datasource["ct_target_max_mem_mb"]+"\n")
+	file_lines.append(cache["ct_target_max_mem_mb"]+"\n")
 	file_lines.append("ct_target_dirty_ratio   ")
-	file_lines.append(datasource["ct_target_dirty_ratio"]+"\n")
+	file_lines.append(cache["ct_target_dirty_ratio"]+"\n")
 	file_lines.append("ct_target_full_ratio   ")
-	file_lines.append(datasource["ct_target_full_ratio"]+"\n")
+	file_lines.append(cache["ct_target_full_ratio"]+"\n")
 	file_lines.append("ct_target_min_flush_age_m   ")
-	file_lines.append(datasource["ct_target_min_flush_age_m"]+"\n")
+	file_lines.append(cache["ct_target_min_flush_age_m"]+"\n")
 	file_lines.append("ct_target_min_evict_age_m   ")
-	file_lines.append(datasource["ct_target_min_evict_age_m"]+"\n")
-	return file_lines
+	file_lines.append(cache["ct_target_min_evict_age_m"]+"\n")
 
-def generate_cluster_settings_content(datasource):
-	file_lines = []
-	file_lines.append("[Settings]\n")
+
+	#get the settings datasource
+	settings = datasource["settings"]
+	file_lines.append("\n\n[Settings]\n")
 	file_lines.append("storage_group_near_full_threshold   ")
-	file_lines.append(datasource["storage_group_near_full_threshold"]+"\n")
+	file_lines.append(settings["storage_group_near_full_threshold"]+"\n")
 	file_lines.append("storage_group_full_threshold   ")
-	file_lines.append(datasource["storage_group_full_threshold"]+"\n")
+	file_lines.append(settings["storage_group_full_threshold"]+"\n")
 	file_lines.append("ceph_near_full_threshold   ")
-	file_lines.append(datasource["ceph_near_full_threshold"]+"\n")
+	file_lines.append(settings["ceph_near_full_threshold"]+"\n")
 	file_lines.append("ceph_full_threshold   ")
-	file_lines.append(datasource["ceph_full_threshold"]+"\n")
+	file_lines.append(settings["ceph_full_threshold"]+"\n")
 	file_lines.append("pg_count_factor   ")
-	file_lines.append(datasource["pg_count_factor"]+"\n")
+	file_lines.append(settings["pg_count_factor"]+"\n")
 	file_lines.append("heartbeat_interval   ")
-	file_lines.append(datasource["heartbeat_interval"]+"\n")
+	file_lines.append(settings["heartbeat_interval"]+"\n")
 	file_lines.append("osd_heartbeat_interval   ")
-	file_lines.append(datasource["osd_heartbeat_interval"]+"\n")
+	file_lines.append(settings["osd_heartbeat_interval"]+"\n")
 	file_lines.append("osd_heartbeat_grace   ")
-	file_lines.append(datasource["osd_heartbeat_grace"]+"\n")
+	file_lines.append(settings["osd_heartbeat_grace"]+"\n")
 	file_lines.append("disk_near_full_threshold   ")
-	file_lines.append(datasource["disk_near_full_threshold"]+"\n")
+	file_lines.append(settings["disk_near_full_threshold"]+"\n")
 	file_lines.append("disk_full_threshold   ")
-	file_lines.append(datasource["disk_full_threshold"]+"\n")
+	file_lines.append(settings["disk_full_threshold"]+"\n")
+
 	return file_lines
 
 

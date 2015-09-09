@@ -13,33 +13,27 @@ xfs
 [ceph_cluster_addr]
 192.168.1.6/10
 
-
-
 [storage_class]
 10krpm_sas
 7200_rpm_sata
 ssd
-123
 
 [storage_group]
 #[group_name]   [friendly_name]   [storage_class]
 performance   performance   10krpm_sas   
 capacity   capacity   7200_rpm_sata   
 high_performance   high_performance   ssd   
-s   s   ssd   
-1235   1234   123   
 
 
 [ec_profiles]
 #[profile-name] [path-to-plugin] [plugin-name] [pg_num value] [json format key/value]
-default_profile1   /usr/lib64/ceph/erasure-code1   jerasure1   31   {"k1":2,"m":1,"technique":"reed_sol_van"}   
-default_profile4   /usr/lib64/ceph/erasure-code4   jerasure4   34   {"k4":2,"m":1,"technique":"reed_sol_van"}   
-default_profile5   /usr/lib64/ceph/erasure-code5   jerasure5   35   {"k5":2,"m":1,"technique":"reed_sol_van"}   
-123123   321321   321312   3213   32131   
+default_profile1   31   jerasure1   /usr/lib64/ceph/erasure-code1   {"k1":2,"m":1,"technique":"reed_sol_van"}   
+default_profile4   34   jerasure4   /usr/lib64/ceph/erasure-code4   {"k4":2,"m":1,"technique":"reed_sol_van"}   
+default_profile5   35   jerasure5   /usr/lib64/ceph/erasure-code5   {"k5":2,"m":1,"technique":"reed_sol_van"}   
 
 
 [Cache]
-ct_hit_set_count   1
+ct_hit_set_count   111111
 ct_hit_set_period_s   3600
 ct_target_max_objects   1000000
 ct_target_max_mem_mb   1000000
@@ -50,7 +44,7 @@ ct_target_min_evict_age_m   20
 
 
 [Settings]
-storage_group_near_full_threshold   65
+storage_group_near_full_threshold   6555555555
 storage_group_full_threshold   85
 ceph_near_full_threshold   75
 ceph_full_threshold   90
@@ -60,5 +54,3 @@ osd_heartbeat_interval   10
 osd_heartbeat_grace   10
 disk_near_full_threshold   75
 disk_full_threshold   90
-
-

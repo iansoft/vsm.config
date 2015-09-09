@@ -11,11 +11,10 @@
     <!--Warning tip-->
     <div id="divBasicMessage">
     </div>
-    
     <!-- {{cluster_basic_data}} -->
       <div class="form-group">
         <label class="label-1" for="lblCluster">cluster</label>
-        <input id="txtCluster" type="textbox" class="form-control" value="{{config_data.controller_address}}" readOnly="true"/>
+        <input id="txtCluster" type="textbox" class="form-control" value="{{conf.controller_address}}" readOnly="true"/>
       </div>
       <div class="form-group">
         <label class="label-1" for="selFileSystem">file system</label>
@@ -23,21 +22,21 @@
           <option value="xfs">xfs</option>
           <option value="nfts">nfts</option>
         </select>
-        <input id="hfFileSystem" type="hidden" value="{{cluster_basic_data.file_system}}"/>
+        <input id="hfFileSystem" type="hidden" value="{{cluster.basic.file_system}}"/>
       </div>
       <br>
       <br>
       <div class="form-group">
         <label class="label-1" for="lblManagementAddress">mgmt. subnet</label>
-        <input id="txtManagementAddress" type="textbox" class="form-control" value="{{cluster_basic_data.management_addr}}" placeholder="192.168.0.1/10" />
+        <input id="txtManagementAddress" type="textbox" class="form-control" value="{{cluster.basic.management_addr}}" placeholder="192.168.0.1/10" />
       </div>
       <div class="form-group">
         <label class="label-1" for="lblCephPublicAddress">public subnet</label>
-        <input id="txtCephPublicAddress"  type="textbox" class="form-control" value="{{cluster_basic_data.ceph_public_addr}}" placeholder="192.168.0.1/10" />
+        <input id="txtCephPublicAddress"  type="textbox" class="form-control" value="{{cluster.basic.ceph_public_addr}}" placeholder="192.168.0.1/10" />
       </div>
       <div class="form-group">
         <label class="label-1" for="lblCephClusterAddress">cluster subnet</label>
-        <input id="txtCephClusterAddress" type="textbox" class="form-control" value="{{cluster_basic_data.ceph_cluster_addr}}" placeholder="192.168.0.1/10" />
+        <input id="txtCephClusterAddress" type="textbox" class="form-control" value="{{cluster.basic.ceph_cluster_addr}}" placeholder="192.168.0.1/10" />
       </div>
 </div>
 <!--Storage-->
@@ -55,7 +54,7 @@
         <a id="btnAddStorageClass" class="btn btn-primary" onclick='AddStorageClass()'>add</a>
       </div>
       <div id="divStorageClass1" class="form-group storage-class">
-        {% for storage_class in cluster_storage_data.storage_class %}
+        {% for storage_class in cluster.storage.storage_class %}
           <span class="label label-info lable-storage-class" onclick='RemoveStorageClass(this)'>{{storage_class}}</span>
         {% endfor %}
       </div>
@@ -72,7 +71,7 @@
         </tr>
       </thead>
       <tbody>
-        {% for storage_group in cluster_storage_data.storage_group %}
+        {% for storage_group in cluster.storage.storage_group %}
           <tr>
             <td class='group-name'>{{storage_group.group_name}}</td>
             <td class='friendly-name'>{{storage_group.friendly_name}}</td>
@@ -113,7 +112,7 @@
         </tr>
       </thead>
       <tbody>
-        {% for profile in cluster_profile_data %}
+        {% for profile in cluster.profile %}
           <tr class="profile-row">
             <td class='profile-name'>{{profile.name}}</td>
             <td class='profile-pg-number'>{{profile.pg_num}}</td>
@@ -145,41 +144,41 @@
     </div>
       <div class="form-group">
         <label class="label-2" for="txt_ct_hit_set_count">ct hit set count</label>
-        <input id="txt_ct_hit_set_count"  type="textbox" class="form-control txt-cache" value="{{cluster_cache_data.ct_hit_set_count}}" />
+        <input id="txt_ct_hit_set_count"  type="textbox" class="form-control txt-cache" value="{{cluster.cache.ct_hit_set_count}}" />
       </div>
       <div class="form-group">
         <label class="label-2" for="txt_ct_hit_set_period_s">ct hit set period s</label>
-        <input id="txt_ct_hit_set_period_s"  type="textbox" class="form-control txt-cache" value="{{cluster_cache_data.ct_hit_set_period_s}}" />
+        <input id="txt_ct_hit_set_period_s"  type="textbox" class="form-control txt-cache" value="{{cluster.cache.ct_hit_set_period_s}}" />
       </div>
       <br>
       <br>
       <div class="form-group">
         <label class="label-2" for="txt_ct_target_max_objects">ct target max objects</label>
-        <input id="txt_ct_target_max_objects"  type="textbox" class="form-control txt-cache" value="{{cluster_cache_data.ct_target_max_objects}}" />
+        <input id="txt_ct_target_max_objects"  type="textbox" class="form-control txt-cache" value="{{cluster.cache.ct_target_max_objects}}" />
       </div>
       <div class="form-group">
         <label class="label-2" for="txt_ct_target_max_mem_mb">ct target max mem mb</label>
-        <input id="txt_ct_target_max_mem_mb"  type="textbox" class="form-control txt-cache" value="{{cluster_cache_data.ct_target_max_mem_mb}}" />
+        <input id="txt_ct_target_max_mem_mb"  type="textbox" class="form-control txt-cache" value="{{cluster.cache.ct_target_max_mem_mb}}" />
       </div>
       <br>
       <br>
       <div class="form-group">
         <label class="label-2" for="txt_ct_target_dirty_ratio">ct target dirty ratio</label>
-        <input id="txt_ct_target_dirty_ratio"  type="textbox" class="form-control txt-cache" value="{{cluster_cache_data.ct_target_dirty_ratio}}" />
+        <input id="txt_ct_target_dirty_ratio"  type="textbox" class="form-control txt-cache" value="{{cluster.cache.ct_target_dirty_ratio}}" />
       </div>
       <div class="form-group">
         <label class="label-2" for="txt_ct_target_full_ratio">ct target full ratio</label>
-        <input id="txt_ct_target_full_ratio"  type="textbox" class="form-control txt-cache" value="{{cluster_cache_data.ct_target_full_ratio}}" />
+        <input id="txt_ct_target_full_ratio"  type="textbox" class="form-control txt-cache" value="{{cluster.cache.ct_target_full_ratio}}" />
       </div>
       <br>
       <br>
       <div class="form-group">
         <label class="label-2" for="txt_ct_target_min_flush_age_m">ct target min flush age m</label>
-        <input id="txt_ct_target_min_flush_age_m"  type="textbox" class="form-control txt-cache" value="{{cluster_cache_data.ct_target_min_flush_age_m}}" />
+        <input id="txt_ct_target_min_flush_age_m"  type="textbox" class="form-control txt-cache" value="{{cluster.cache.ct_target_min_flush_age_m}}" />
       </div>
       <div class="form-group">
         <label class="label-2" for="txt_ct_target_min_evict_age_m">ct target min evict age m</label>
-        <input id="txt_ct_target_min_evict_age_m"  type="textbox" class="form-control txt-cache" value="{{cluster_cache_data.ct_target_min_evict_age_m}}" />
+        <input id="txt_ct_target_min_evict_age_m"  type="textbox" class="form-control txt-cache" value="{{cluster.cache.ct_target_min_evict_age_m}}" />
       </div>
 </div>
 
@@ -192,51 +191,51 @@
       </div>
       <div class="form-group">
         <label class="label-2" for="txt_storage_group_near_full_threshold">storage group near full threshold</label>
-         <input id="txt_storage_group_near_full_threshold"  type="textbox" class="form-control txt-settings" value="{{cluster_settings_data.storage_group_near_full_threshold}}" />
+         <input id="txt_storage_group_near_full_threshold"  type="textbox" class="form-control txt-settings" value="{{cluster.settings.storage_group_near_full_threshold}}" />
       </div>
       <div class="form-group">
         <label class="label-2" for="txt_storage_group_full_threshold">storage group full threshold</label>
-        <input id="txt_storage_group_full_threshold"  type="textbox" class="form-control txt-settings" value="{{cluster_settings_data.storage_group_full_threshold}}" />
+        <input id="txt_storage_group_full_threshold"  type="textbox" class="form-control txt-settings" value="{{cluster.settings.storage_group_full_threshold}}" />
       </div>
     <br>
     <br>
       <div class="form-group">
         <label class="label-2" for="txt_ceph_near_full_threshold">ceph near full threshold</label>
-        <input id="txt_ceph_near_full_threshold"  type="textbox" class="form-control txt-settings" value="{{cluster_settings_data.ceph_near_full_threshold}}" />
+        <input id="txt_ceph_near_full_threshold"  type="textbox" class="form-control txt-settings" value="{{cluster.settings.ceph_near_full_threshold}}" />
       </div>
       <div class="form-group">
         <label class="label-2" for="txt_ceph_full_threshold">ceph full threshold</label>
-        <input id="txt_ceph_full_threshold"  type="textbox" class="form-control txt-settings" value="{{cluster_settings_data.ceph_full_threshold}}" />
+        <input id="txt_ceph_full_threshold"  type="textbox" class="form-control txt-settings" value="{{cluster.settings.ceph_full_threshold}}" />
       </div>
     <br>
     <br>
       <div class="form-group">
         <label class="label-2" for="txt_pg_count_factor">pg count factor</label>
-         <input id="txt_pg_count_factor"  type="textbox" class="form-control txt-settings" value="{{cluster_settings_data.pg_count_factor}}" />
+         <input id="txt_pg_count_factor"  type="textbox" class="form-control txt-settings" value="{{cluster.settings.pg_count_factor}}" />
       </div>
       <div class="form-group">
         <label class="label-2" for="txt_heartbeat_interval">heartbeat interval</label>
-        <input id="txt_heartbeat_interval"  type="textbox" class="form-control txt-settings" value="{{cluster_settings_data.heartbeat_interval}}" />
+        <input id="txt_heartbeat_interval"  type="textbox" class="form-control txt-settings" value="{{cluster.settings.heartbeat_interval}}" />
       </div>
     <br>
     <br>
       <div class="form-group">
         <label class="label-2" for="txt_osd_heartbeat_interval">osd hearbeat interval</label>
-         <input id="txt_osd_heartbeat_interval"  type="textbox" class="form-control txt-settings" value="{{cluster_settings_data.osd_heartbeat_interval}}" />
+         <input id="txt_osd_heartbeat_interval"  type="textbox" class="form-control txt-settings" value="{{cluster.settings.osd_heartbeat_interval}}" />
       </div>
       <div class="form-group">
         <label class="label-2" for="txt_osd_heartbeat_grace">osd hearbeat grace</label>
-         <input id="txt_osd_heartbeat_grace"  type="textbox" class="form-control txt-settings" value="{{cluster_settings_data.osd_heartbeat_grace}}" />
+         <input id="txt_osd_heartbeat_grace"  type="textbox" class="form-control txt-settings" value="{{cluster.settings.osd_heartbeat_grace}}" />
       </div>
     <br>
     <br>
       <div class="form-group">
         <label class="label-2" for="txt_disk_near_full_threshold">disk near full threshold</label>
-        <input id="txt_disk_near_full_threshold"  type="textbox" class="form-control txt-settings" value="{{cluster_settings_data.disk_near_full_threshold}}" />
+        <input id="txt_disk_near_full_threshold"  type="textbox" class="form-control txt-settings" value="{{cluster.settings.disk_near_full_threshold}}" />
       </div>
       <div class="form-group">
         <label class="label-2" for="txt_disk_full_threshold">disk full threshold</label>
-        <input id="txt_disk_full_threshold"  type="textbox" class="form-control txt-settings" value="{{cluster_settings_data.disk_full_threshold}}" />
+        <input id="txt_disk_full_threshold"  type="textbox" class="form-control txt-settings" value="{{cluster.settings.disk_full_threshold}}" />
       </div>
 </div>
 

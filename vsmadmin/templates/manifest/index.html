@@ -19,12 +19,12 @@
 <ul id="tabManifest" class="nav nav-tabs">
   <li class="active">
 	  <a href="#divCluster" data-toggle="tab" style="color:red" onclick="SelecteClusterTab()">
-      Cluster:{{config_data.controller_address}}
+      Cluster:{{conf.controller_address}}
     </a>
 	</li>
-  {% for tab_node in config_data.nodes %}
+  {% for node in conf.nodes %}
     <li class="tab-server">
-      <a id="link_node_{{ forloop.counter}}" href="#node_{{ forloop.counter}}" data-toggle="tab" class='server-link' onclick="SelecteTab({{ forloop.counter }})">{{tab_node}}</a>
+      <a id="link_node_{{ forloop.counter}}" href="#node_{{ forloop.counter}}" data-toggle="tab" class='server-link' onclick="SelecteTab({{ forloop.counter }})">{{node}}</a>
     </li>
   {% endfor %}
 </ul>
@@ -34,7 +34,7 @@
     {% include "pages/cluster.html" %}
   </div>
 
-    {% for tab_node in config_data.nodes %}
+    {% for node in conf.nodes %}
     <div id="node_{{ forloop.counter }}" class="tab-pane fade" >
         {% include "pages/server.html" %} 
     </div>
