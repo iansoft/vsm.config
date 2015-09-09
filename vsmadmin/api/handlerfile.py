@@ -1,4 +1,5 @@
-import re
+import re,os
+import shutil
 from django.conf import settings
 
 
@@ -485,6 +486,35 @@ def generate_cluster_manifest(datasource):
 	file_lines.append(settings["disk_full_threshold"]+"\n")
 
 	return file_lines
+
+#====================Copy the manifest file to project=========
+def copy_manifest(package_name):
+	#get the file list
+	file_list = []
+	#get the cluster manifest
+	cluster_manifest_item = {
+		"f":settings.RESOURCE_DIR +"/cluster.manifest",
+		"t":settings.INSTALLER_DIR + package_name + "/manifest/cluster.manifest",
+	}
+	file_list.append(cluster_manifest_item);
+	#get the server manifest
+	server_ip_list = get_server_ip_list()
+	for server_ip in server_ip_list:
+	 	f_path = settings.RESOURCE_DIR + server_ip + "/server.manifest"
+	 	t_path = settings.INSTALLER_DIR + package_name +"/manifest/" + server_ip + "/server.manifest"
+	 	t_folder = settings.INSTALLER_DIR + package_name +"/manifest/" + server_ip
+		server_manifest_item = {
+			"f":f_path,
+			"t":t_path,
+			"Folder":t_folder,
+		}
+		file_list.append(server_manifest_item)
+	#excute copy
+	for item in file_list:
+		if not os.path.exists(item["t"]):
+			os.mkdir(item["Folder"])
+		shutil.copyfile(item["f"],item["t"])
+
 
 
 

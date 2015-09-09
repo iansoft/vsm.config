@@ -4,9 +4,10 @@ from django import forms
 import time
 import os
 import tarfile
+from django.conf import settings
+import api.handlerfile as HandlerFile
 
 class UploadFileForm(forms.Form):
-	title = forms.CharField(max_length=50)
 	file = forms.FileField()
 
 def index(request):
@@ -25,29 +26,26 @@ def handle_uploaded_file(f):
 	file_name = ""
 
 	try:
-		base_dir = os.path.dirname(os.path.dirname(__file__))
-		upload_path = base_dir +"/files/package/"
-		extract_path = base_dir +"/files/installer/"
-		file_path = upload_path + f.name
-
+		file_path = settings.PACKAGE_DIR + f.name
 		#if the package folder is not is exsit
 		#then create one
-		if not os.path.exists(upload_path):
-			os.makedirs(upload_path)
-		if not os.path.exists(extract_path):
-			os.makedirs(extract_path)
+		if not os.path.exists(settings.PACKAGE_DIR):
+			os.makedirs(settings.PACKAGE_DIR)
+		if not os.path.exists(settings.INSTALLER_DIR):
+			os.makedirs(settings.INSTALLER_DIR)
 		#write the file bytes
 		destination = open(file_path,"wb+")
 		for chunk in f.chunks():
 			destination.write(chunk)
 		destination.close()
 		#extract the tar.gz
-		extract_tarfile(file_path,extract_path)
+		extract_tarfile(file_path,settings.INSTALLER_DIR)
+		#copy the manifest file into the install folder
+		HandlerFile.copy_manifest(f.name.replace(".tar.gz",""))
 	except Exception,e:
 		print e
 
 	return file_name
-
 
 def extract_tarfile(file_path,extract_path):
 	tar = tarfile.open(file_path)

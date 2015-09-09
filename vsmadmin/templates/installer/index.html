@@ -3,15 +3,33 @@
 {% block title %}Virtual Storage Manager{% endblock%}
 
 {% block js %}
-  <script src="{{ STATIC_URL }}js/config.js"></script>
+  <script src="{{ STATIC_URL }}js/installer.js"></script>
 {% endblock %}
 
 {% block content %}
+<br>
+<div id="divFileUpload" class="module-wrap">
+	<form  method="post" class="form-inline" enctype="multipart/form-data">
+		<div class="form-group">
+			<a id="linkUploadfile" href="#" class="file btn btn-default">
+				{{form}}
+				<span>选择上传文件</span>
+			</a>
+		</div>
+		<input type="submit"  class="btn btn-success"  value="install"/>
+	</form>
+</div>
 
 
-<form method="post" enctype="multipart/form-data">
-  {{form.as_p}}
-  <input type="submit" value="OK"/>
-</form>
+<div id="divFileInfo" class="module-wrap">
+	<!--Warning tip-->
+    <div id="divClusterMessage">
+    </div>
+	<div class="form-group">
+      	<label class="label-1" style="text-align:left;margin-left:30px" for="txtClusterAddress">FileName:</label>
+     	<span id="lblFileName"></span>
+    </div>
+</div>
+
 
 {% endblock %}

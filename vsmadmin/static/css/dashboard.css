@@ -168,3 +168,26 @@ hr{
     text-align: center;
     border-bottom:0px;
 }
+
+.file {
+    position: relative;
+    display: inline-block;
+    margin-left: 15px;
+}
+
+.file input {
+    position: absolute;
+    height: 30px;
+    right: 0;
+    top: 0;
+    opacity: 0;
+}
+
+
+.file label{
+    display: none;
+}
+
+.file ul{
+    display: none;
+}

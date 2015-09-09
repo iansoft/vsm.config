@@ -1,0 +1,27 @@
+[vsm_controller_ip]
+192.168.1.2
+
+[role]
+storage
+
+[auth_key]
+auth_key
+
+[123]
+321321   3213213
+bbbbbbbbbbbbb   aaaaaaaaaaaaaa
+
+
+[10krpm_sas]
+3213213   21321321
+
+
+[ssd]
+3213213   321321
+
+
+[7200_rpm_sata]
+3213213   2131232131
+32123123   32131
+
+
