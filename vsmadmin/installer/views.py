@@ -14,8 +14,8 @@ def index(request):
 	if request.method == "POST":
 		form = UploadFileForm(request.POST,request.FILES)
 		if form.is_valid():
-			handle_uploaded_file(request.FILES['file'])
-			return HttpResponse('upload ok!')
+			file_name = handle_uploaded_file(request.FILES['file'])
+			return render(request,"installer/index.html",{'form':form,"file_name":file_name})
 	else:
 		form = UploadFileForm()
 
@@ -45,7 +45,7 @@ def handle_uploaded_file(f):
 	except Exception,e:
 		print e
 
-	return file_name
+	return f.name
 
 def extract_tarfile(file_path,extract_path):
 	tar = tarfile.open(file_path)
