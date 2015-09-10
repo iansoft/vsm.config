@@ -487,14 +487,27 @@ def generate_cluster_manifest(datasource):
 
 	return file_lines
 
-#====================Copy the manifest file to project=========
+#====================INSTALL STUFF============================
+def extract_tarfile(file_path,extract_path):
+	tar = tarfile.open(file_path)
+	names = tar.getnames()
+	for name in names:
+		tar.extract(name,path=extract_path)
+	tar.close()
+
 def copy_manifest(package_name):
 	#get the file list
 	file_list = []
 	#get the cluster manifest
+	controller_ip = read_conf_manifest()["controller_address"]
+
+	f_path = settings.RESOURCE_DIR +"/cluster.manifest"
+	t_path = settings.INSTALLER_DIR + package_name +"/manifest/" + controller_ip + "/cluster.manifest"
+	t_folder = settings.INSTALLER_DIR + package_name +"/manifest/" + controller_ip
 	cluster_manifest_item = {
-		"f":settings.RESOURCE_DIR +"/cluster.manifest",
-		"t":settings.INSTALLER_DIR + package_name + "/manifest/cluster.manifest",
+		"f":f_path,
+		"t":t_path,
+		"folder":t_folder,
 	}
 	file_list.append(cluster_manifest_item);
 	#get the server manifest
@@ -506,17 +519,48 @@ def copy_manifest(package_name):
 		server_manifest_item = {
 			"f":f_path,
 			"t":t_path,
-			"Folder":t_folder,
+			"folder":t_folder,
 		}
 		file_list.append(server_manifest_item)
+
+	#clear the exist file
+	target_package = settings.INSTALLER_DIR + package_name+"/manifest/"
+	for file_item in os.listdir(target_package):
+		target_dir = os.path.join(target_package,file_item)
+		if os.path.isdir(target_dir):
+			shutil.rmtree(target_dir)
+
 	#excute copy
 	for item in file_list:
 		if not os.path.exists(item["t"]):
-			os.mkdir(item["Folder"])
+			os.mkdir(item["folder"])
 		shutil.copyfile(item["f"],item["t"])
 
+def edit_installrc(package_name):
+	#get the server ip list
+	server_ip_list = get_server_ip_list()
+	server_ip_list_str = ""
+	for server_ip in server_ip_list:
+		server_ip_list_str = server_ip_list_str + server_ip + " "
+	#get the controller_ip
+	controller_ip = read_conf_manifest()["controller_address"]
 
+	rc_path = settings.INSTALLER_DIR + package_name +"/installrc"
+	fileHandler = open(rc_path,"a+")
+	file_lines = fileHandler.readlines()
+	#remove all the '\n' item
+	# file_lines = filter(lambda a: a != '\n', file_lines)
+	# file_lines = [item.replace('\n','') for item in file_lines]
 
+	#generate the content of file
+	file_content = [] #for rewrite the installrc file
+	for line in file_lines:
+		line_item = line.split("=")
+		if line_item[0] == "#AGENT_ADDRESS_LIST":
+			line = "#AGENT_ADDRESS_LIST=\"" + server_ip_list_str + "\"\n"
+		if line_item[0] == "#CONTROLLER_ADDRESS":
+			line = "#CONTROLLER_ADDRESS=\"" + controller_ip + "\""
+		file_content.append(line)
 
-
-
+	#write the file 
+	write_file(rc_path,file_content)

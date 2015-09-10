@@ -6,6 +6,7 @@ import os
 import tarfile
 from django.conf import settings
 import api.handlerfile as HandlerFile
+import subprocess
 
 class UploadFileForm(forms.Form):
 	file = forms.FileField()
@@ -24,7 +25,7 @@ def index(request):
 
 def handle_uploaded_file(f):
 	file_name = ""
-
+	package_name = f.name.replace(".tar.gz","")
 	try:
 		file_path = settings.PACKAGE_DIR + f.name
 		#if the package folder is not is exsit
@@ -39,17 +40,23 @@ def handle_uploaded_file(f):
 			destination.write(chunk)
 		destination.close()
 		#extract the tar.gz
-		extract_tarfile(file_path,settings.INSTALLER_DIR)
+		HandlerFile.extract_tarfile(file_path,settings.INSTALLER_DIR)
 		#copy the manifest file into the install folder
-		HandlerFile.copy_manifest(f.name.replace(".tar.gz",""))
+		HandlerFile.copy_manifest(package_name)
+		#edit the installer resource file
+		HandlerFile.edit_installrc(package_name)
+		#excute the install.sh
+		install_vsm(package_name)
+
 	except Exception,e:
 		print e
 
 	return f.name
 
-def extract_tarfile(file_path,extract_path):
-	tar = tarfile.open(file_path)
-	names = tar.getnames()
-	for name in names:
-		tar.extract(name,path=extract_path)
-	tar.close()
+
+def install_vsm(package_name):
+	install_sh_path = settings.INSTALLER_DIR + package_name +"/install.sh"
+	cmd = subprocess.Popen(install_sh_path, stdout=subprocess.PIPE, shell=True)
+	(output, err) = p.communicate()
+	print "=====================excute the install.sh====================="
+	print output

@@ -1,8 +1,7 @@
 # AGENT_ADDRESS_LIST should be split by blank.
 # AGENT_ADDRESS_LIST and CONTROLLER_ADDRESS can be set ip or hostname.
-#AGENT_ADDRESS_LIST="10.0.0.11 10.0.0.12 10.0.0.13"
-#CONTROLLER_ADDRESS="10.0.0.10"
-
+#AGENT_ADDRESS_LIST="192.168.1.2 192.168.1.4 192.168.1.5 "
+#CONTROLLER_ADDRESS="192.168.1.1"
 
 # If you want to use OpenStack Keystone, you should set as followed. The admin-token
 # can be found in /etc/keystone/keystone.conf.
