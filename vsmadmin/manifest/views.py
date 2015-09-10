@@ -1,11 +1,10 @@
-from django.http import HttpResponse,JsonResponse, HttpResponseNotFound
+from django.http import HttpResponse, HttpResponseNotFound
 from django.template import RequestContext, loader
 from django.conf import settings 
 import datetime
 import os
 import random
 import json
-import tempfile,zipfile
 from django.core.servers.basehttp import FileWrapper
 import api.handlerfile as HandlerFile
 

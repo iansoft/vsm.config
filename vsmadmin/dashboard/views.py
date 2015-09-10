@@ -1,4 +1,4 @@
-from django.http import HttpResponse,JsonResponse, HttpResponseNotFound
+from django.http import HttpResponse, HttpResponseNotFound
 from django.template import RequestContext, loader
 from django.conf import settings
 import datetime
