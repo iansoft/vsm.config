@@ -1,5 +1,6 @@
 import re,os
 import shutil
+import tarfile
 import tempfile,zipfile
 from django.conf import settings
 

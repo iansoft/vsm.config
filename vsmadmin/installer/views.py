@@ -3,7 +3,6 @@ from django.shortcuts import render,render_to_response
 from django import forms
 import time
 import os
-import tarfile
 from django.conf import settings
 import api.handlerfile as HandlerFile
 import subprocess
@@ -57,6 +56,6 @@ def handle_uploaded_file(f):
 def install_vsm(package_name):
 	install_sh_path = settings.INSTALLER_DIR + package_name +"/install.sh"
 	cmd = subprocess.Popen(install_sh_path, stdout=subprocess.PIPE, shell=True)
-	(output, err) = p.communicate()
+	(output, err) = cmd.communicate()
 	print "=====================excute the install.sh====================="
 	print output
