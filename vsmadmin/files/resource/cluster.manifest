@@ -28,9 +28,9 @@ high_performance   high_performance   ssd
 
 [ec_profiles]
 #[profile-name] [path-to-plugin] [plugin-name] [pg_num value] [json format key/value]
-default_profile1   /usr/lib64/ceph/erasure-code1   jerasure1   31   {"k1":2,"m":1,"technique":"reed_sol_van"}   
-default_profile4   /usr/lib64/ceph/erasure-code4   jerasure4   34   {"k4":2,"m":1,"technique":"reed_sol_van"}   
-default_profile5   /usr/lib64/ceph/erasure-code5   jerasure5   35   {"k5":2,"m":1,"technique":"reed_sol_van"}   
+default_profile1   31   jerasure1   /usr/lib64/ceph/erasure-code1   {"k1":2,"m":1,"technique":"reed_sol_van"}   
+default_profile4   34   jerasure4   /usr/lib64/ceph/erasure-code4   {"k4":2,"m":1,"technique":"reed_sol_van"}   
+default_profile5   35   jerasure5   /usr/lib64/ceph/erasure-code5   {"k5":2,"m":1,"technique":"reed_sol_van"}   
 
 
 [Cache]
@@ -55,3 +55,4 @@ osd_heartbeat_interval   10
 osd_heartbeat_grace   10
 disk_near_full_threshold   75
 disk_full_threshold   90
+osd_pool_default_size   10

@@ -332,7 +332,7 @@ def read_cluster_cache(file_lines):
 	return cluster_cache
 
 def read_cluster_settings(file_lines):
-	cluster_cache = {
+	cluster_settings = {
 		"storage_group_near_full_threshold":0,
 		"storage_group_full_threshold":0,
 		"ceph_near_full_threshold":0,
@@ -343,6 +343,7 @@ def read_cluster_settings(file_lines):
 		"disk_full_threshold":0,
 		"pg_count_factor":0,
 		"heartbeat_interval":0,
+		"osd_pool_default_size":0,
 	}
 
 	item_flag = ""
@@ -355,29 +356,31 @@ def read_cluster_settings(file_lines):
 		#get out the loop of cluster cache
 		if item_flag == "Settings":
 			item = re.sub("(\s+)","|",item)
-			cache_items = re.split("(\|)",item)
-			if cache_items[0] == "storage_group_near_full_threshold":
-				cluster_cache["storage_group_near_full_threshold"] = cache_items[2]
-			if cache_items[0] == "storage_group_full_threshold":
-				cluster_cache["storage_group_full_threshold"] = cache_items[2]
-			if cache_items[0] == "ceph_near_full_threshold":
-				cluster_cache["ceph_near_full_threshold"] = cache_items[2]
-			if cache_items[0] == "ceph_full_threshold":
-				cluster_cache["ceph_full_threshold"] = cache_items[2]
-			if cache_items[0] == "osd_heartbeat_interval":
-				cluster_cache["osd_heartbeat_interval"] = cache_items[2]
-			if cache_items[0] == "osd_heartbeat_grace":
-				cluster_cache["osd_heartbeat_grace"] = cache_items[2]
-			if cache_items[0] == "disk_near_full_threshold":
-				cluster_cache["disk_near_full_threshold"] = cache_items[2]
-			if cache_items[0] == "disk_full_threshold":
-				cluster_cache["disk_full_threshold"] = cache_items[2]
-			if cache_items[0] == "pg_count_factor":
-				cluster_cache["pg_count_factor"] = cache_items[2]
-			if cache_items[0] == "heartbeat_interval":
-				cluster_cache["heartbeat_interval"] = cache_items[2]
+			settings_items = re.split("(\|)",item)
+			if settings_items[0] == "storage_group_near_full_threshold":
+				cluster_settings["storage_group_near_full_threshold"] = settings_items[2]
+			if settings_items[0] == "storage_group_full_threshold":
+				cluster_settings["storage_group_full_threshold"] = settings_items[2]
+			if settings_items[0] == "ceph_near_full_threshold":
+				cluster_settings["ceph_near_full_threshold"] = settings_items[2]
+			if settings_items[0] == "ceph_full_threshold":
+				cluster_settings["ceph_full_threshold"] = settings_items[2]
+			if settings_items[0] == "osd_heartbeat_interval":
+				cluster_settings["osd_heartbeat_interval"] = settings_items[2]
+			if settings_items[0] == "osd_heartbeat_grace":
+				cluster_settings["osd_heartbeat_grace"] = settings_items[2]
+			if settings_items[0] == "disk_near_full_threshold":
+				cluster_settings["disk_near_full_threshold"] = settings_items[2]
+			if settings_items[0] == "disk_full_threshold":
+				cluster_settings["disk_full_threshold"] = settings_items[2]
+			if settings_items[0] == "pg_count_factor":
+				cluster_settings["pg_count_factor"] = settings_items[2]
+			if settings_items[0] == "heartbeat_interval":
+				cluster_settings["heartbeat_interval"] = settings_items[2]
+			if settings_items[0] == "osd_pool_default_size":
+				cluster_settings["osd_pool_default_size"] = settings_items[2]
 
-	return cluster_cache
+	return cluster_settings
 
 
 #=====================SET THE MANIFEST======================== 
@@ -488,6 +491,8 @@ def generate_cluster_manifest(datasource):
 	file_lines.append(settings["disk_near_full_threshold"]+"\n")
 	file_lines.append("disk_full_threshold   ")
 	file_lines.append(settings["disk_full_threshold"]+"\n")
+	file_lines.append("osd_pool_default_size   ")
+	file_lines.append(settings["osd_pool_default_size"]+"\n")
 
 	return file_lines
 

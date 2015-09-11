@@ -237,6 +237,7 @@ function GenerateClusterSettingsData(){
 		"osd_heartbeat_grace":$("#txt_osd_heartbeat_grace").val(),
 		"disk_near_full_threshold":$("#txt_disk_near_full_threshold").val(),
 		"disk_full_threshold":$("#txt_disk_full_threshold").val(),
+		"osd_pool_default_size":$("#txt_osd_pool_default_size").val(),
 	}
 
 	return cluster_settings_data;
