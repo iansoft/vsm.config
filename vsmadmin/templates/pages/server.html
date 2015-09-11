@@ -14,16 +14,20 @@
     </div>
     <div class="form-group">
       <label class="label-1" >auth key</label>
-      <input id="txtAuthKey" type="textbox" class="form-control" readOnly="true" value=''/>
+      <input id="txtAuthKey" type="textbox" class="form-control" readOnly="true" value='token-tenant'/>
     </div>
     <br>
     <br>
     <div class="form-group">
       <label class="label-1" for="lblStorageClass">role</label>
-      <select id="selRole" class="form-control" style="width:195px;">
-        <option value="storage">storage</option>
-        <option value="monitor">monitor</option>
-      </select>
+      <div class="checkbox">
+        <label>
+          <input id="ckbStorage" type="checkbox" name="ckbRole" value='storage'/>storage
+        </label>
+        <label>
+          <input id="ckbMonitor" type="checkbox" name="ckbRole" value='monitor' /> monitor
+        </label>
+      </div>
     </div>
   </form>
 </div> 

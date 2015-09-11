@@ -3,13 +3,12 @@
 
 [role]
 storage
+monitor
 
 [auth_key]
-auth_key
+token-tenant
 
-[123]
-321321   3213213
-bbbbbbbbbbbbb   aaaaaaaaaaaaaa
+[1312]
 
 
 [10krpm_sas]

@@ -12,7 +12,7 @@ def write_file(file_path,file_content):
 
 #=====================GET SOME INFORMATION====================
 def get_storage_class_name_list():
-	manifest_path = settings.RESOURCE_DIR + "/cluster.manifest.files/storage.manifest"
+	manifest_path = settings.RESOURCE_DIR + "/cluster.manifest"
 	fileHandler = open(manifest_path,"a+")
 	file_lines = fileHandler.readlines()
 	#remove all the '\n' item
@@ -386,7 +386,9 @@ def generate_server_manifest(datasource):
 	file_lines.append("[vsm_controller_ip]\n")
 	file_lines.append(datasource["server_ip"]+"\n\n")
 	file_lines.append("[role]\n")
-	file_lines.append(datasource["role"]+"\n\n")
+	for role in datasource["role"]:
+		file_lines.append(role+"\n")
+	file_lines.append("\n")
 	file_lines.append("[auth_key]\n")
 	file_lines.append(datasource["auth_key"]+"\n\n")
 	for sg_item in datasource["path_data"]:
@@ -559,9 +561,9 @@ def edit_installrc(package_name):
 	for line in file_lines:
 		line_item = line.split("=")
 		if line_item[0] == "#AGENT_ADDRESS_LIST":
-			line = "#AGENT_ADDRESS_LIST=\"" + server_ip_list_str + "\"\n"
+			line = "AGENT_ADDRESS_LIST=\"" + server_ip_list_str + "\"\n"
 		if line_item[0] == "#CONTROLLER_ADDRESS":
-			line = "#CONTROLLER_ADDRESS=\"" + controller_ip + "\""
+			line = "CONTROLLER_ADDRESS=\"" + controller_ip + "\""
 		file_content.append(line)
 
 	#write the file 

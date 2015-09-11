@@ -3,23 +3,29 @@ $(document).ready(function(){
 	$("#btnSaveServer").hide();
 	$("#btnGenerateManifest").show();
 	$("#btnInstaller").show();
+
 });
 
 var _INDEX_TAB = "";
 var _GROUP_NAME_LIST = new Array();
 
+
 //save server
 function SaveServer(){
 	var server_data = {
 		server_ip:"",
-		role:"",
+		role:[],
 		auth_key:"",
 		path_data:[]
 	};
 
 	server_data.server_ip = $("#node_"+_INDEX_TAB).find("#txtServerIP").val();
-	server_data.role = $("#node_"+_INDEX_TAB).find("#selRole").val();
 	server_data.auth_key = $("#node_"+_INDEX_TAB).find("#txtAuthKey").val();
+
+	$("#node_"+_INDEX_TAB).find("input[name='ckbRole']").each(function(){
+		if(this.checked)
+			server_data.role.push(this.value);
+	})
 
 	for(var i=0;i<_GROUP_NAME_LIST.length;i++){
 		var group_name = _GROUP_NAME_LIST[i];
@@ -103,7 +109,7 @@ function InitStorageGroup(tabIndex,server_ip){
 			}
 			//get the basic info.
 			$("#node_"+tabIndex).find("#txtServerIP").val(data.server_ip);
-			$("#node_"+tabIndex).find("#txtAuthKey").val(data.auth_key);
+			//$("#node_"+tabIndex).find("#txtAuthKey").val(data.auth_key);
 			$("#node_"+tabIndex).find("#selRole").val(data.role);
 
         	var servers_path_container = $(".server-path-container");

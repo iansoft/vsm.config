@@ -1,6 +1,0 @@
-[ec_profiles]
-#[profile-name] [path-to-plugin] [plugin-name] [pg_num value] [json format key/value]
-default_profile1   /usr/lib64/ceph/erasure-code1   jerasure1   31   {"k1":2,"m":1,"technique":"reed_sol_van"}   
-default_profile4   /usr/lib64/ceph/erasure-code4   jerasure4   34   {"k4":2,"m":1,"technique":"reed_sol_van"}   
-default_profile5   /usr/lib64/ceph/erasure-code5   jerasure5   35   {"k5":2,"m":1,"technique":"reed_sol_van"}   
-123123   321321   321312   3213   32131   

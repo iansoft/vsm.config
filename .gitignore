@@ -6,4 +6,4 @@
 #/vsmadmin/files/installer/*
 #/vsmadmin/files/manifest/*
 
-
+db.sqlite3
