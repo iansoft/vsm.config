@@ -1,0 +1,9 @@
+
+*.py[cod]
+
+#ignore the upload package
+#/vsmadmin/files/package/*
+#/vsmadmin/files/installer/*
+#/vsmadmin/files/manifest/*
+
+
