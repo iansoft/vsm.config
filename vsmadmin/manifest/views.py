@@ -5,6 +5,7 @@ import datetime
 import os
 import random
 import json
+import zipfile
 from django.core.servers.basehttp import FileWrapper
 import api.handlerfile as HandlerFile
 

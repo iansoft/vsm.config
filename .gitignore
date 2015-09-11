@@ -2,8 +2,8 @@
 *.py[cod]
 
 #ignore the upload package
-#/vsmadmin/files/package/*
-#/vsmadmin/files/installer/*
-#/vsmadmin/files/manifest/*
+/vsmadmin/files/package/*
+/vsmadmin/files/installer/*
+/vsmadmin/files/manifest/*
 
 db.sqlite3
