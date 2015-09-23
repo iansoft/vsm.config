@@ -3,9 +3,11 @@ from django.shortcuts import render,render_to_response
 from django import forms
 import time
 import os
+import json
 from django.conf import settings
 import api.handlerfile as HandlerFile
 import subprocess
+import commands
 
 class UploadFileForm(forms.Form):
 	file = forms.FileField()
@@ -14,8 +16,8 @@ def index(request):
 	if request.method == "POST":
 		form = UploadFileForm(request.POST,request.FILES)
 		if form.is_valid():
-			file_name = handle_uploaded_file(request.FILES['file'])
-			return render(request,"installer/index.html",{'form':form,"file_name":file_name})
+			install_log = handle_uploaded_file(request.FILES['file'])
+			return render(request,"installer/index.html",{'form':form,"file_name":install_log["file_name"],"log":install_log["log"]})
 	else:
 		form = UploadFileForm()
 
@@ -25,7 +27,9 @@ def index(request):
 def handle_uploaded_file(f):
 	file_name = ""
 	package_name = f.name.replace(".tar.gz","")
+	install_log = {"file_name":"","log":""}
 	try:
+		install_log["file_name"] = f.name
 		file_path = settings.PACKAGE_DIR + f.name
 		#if the package folder is not is exsit
 		#then create one
@@ -45,17 +49,21 @@ def handle_uploaded_file(f):
 		#edit the installer resource file
 		HandlerFile.edit_installrc(package_name)
 		#excute the install.sh
-		install_vsm(package_name)
+		install_log["log"] = install_vsm(package_name)
 
 	except Exception,e:
 		print e
 
-	return f.name
+	return install_log
 
 
 def install_vsm(package_name):
-	install_sh_path = settings.INSTALLER_DIR + package_name +"/install.sh"
-	cmd = subprocess.Popen(install_sh_path, stdout=subprocess.PIPE, shell=True)
-	(output, err) = cmd.communicate()
-	print "=====================excute the install.sh====================="
-	print output
+	install_sh_path = settings.INSTALLER_DIR + package_name  +"/install.sh"
+	#cmd = subprocess.Popen(install_sh_path, stdout=subprocess.PIPE, shell=True)
+	#(output, err) = cmd.communicate()
+
+	(status, output) = commands.getstatusoutput(install_sh_path)
+	cmd_lines = output.replace('\n','<br />')
+	print cmd_lines
+
+	return cmd_lines

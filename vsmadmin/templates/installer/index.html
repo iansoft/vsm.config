@@ -16,7 +16,8 @@
 				<span>选择上传文件</span>
 			</a>
 		</div>
-		<input type="submit"  class="btn btn-success"  value="install"/>
+		<input id="btnInstall" type="submit"  class="btn btn-success"  value="install"/>
+		<span id="lblInstallMark">Installing...</span>
 	</form>
 </div>
 
@@ -24,10 +25,18 @@
 <div id="divFileInfo" class="module-wrap">
 	<!--Warning tip-->
     <div id="divClusterMessage">
+
     </div>
+
+
 	<div class="form-group">
       	<label class="label-1" style="text-align:left;margin-left:30px" for="txtClusterAddress">FileName:</label>
      	<span id="lblFileName">{{file_name}}</span>
+    </div>
+    <div class="form-group">
+      	<label class="label-1" style="text-align:left;margin-left:30px" for="txtClusterAddress">log:</label>
+      	<div id="txtLogContainer" style="margin-left:40px;"></div>
+     	<input id="hfHiddenLog" type="hidden" value="{{log}}" />
     </div>
 </div>
 
